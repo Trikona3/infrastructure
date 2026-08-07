@@ -86,7 +86,32 @@ services:
 
     networks:
       - construwx-net
+  wpcli:
+    image: wordpress:cli-php8.3
 
+    container_name: construwx-wpcli
+
+    profiles:
+      - tools
+
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      php:
+        condition: service_started
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./data/wordpress:/var/www/html
+
+    working_dir: /var/www/html
+
+    networks:
+      - construwx-net
+
+    entrypoint: ["wp"]
   nginx:
     image: nginx:1.28-alpine
 
