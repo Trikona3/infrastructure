@@ -1,0 +1,30 @@
+FROM wordpress:6.8-php8.3-fpm
+
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    vim \
+    curl \
+    wget \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libicu-dev \
+    libonig-dev \
+    libxml2-dev \
+    libmagickwand-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        gd \
+        mysqli \
+        pdo_mysql \
+        zip \
+        intl \
+        exif \
+        opcache \
+    && pecl install redis imagick \
+    && docker-php-ext-enable redis imagick \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
