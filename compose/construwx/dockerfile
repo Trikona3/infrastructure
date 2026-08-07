@@ -1,35 +1,3 @@
 FROM wordpress:6.8-php8.3-fpm
 
-# Install mlocati PHP extension installer
-COPY --from=ghcr.io/mlocati/php-extension-installer:latest \
-    /usr/bin/install-php-extensions \
-    /usr/local/bin/
-
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    curl \
-    wget \
-    vim \
-    default-mysql-client \
-    imagemagick \
- && rm -rf /var/lib/apt/lists/*
-
-RUN install-php-extensions \
-    gd \
-    mysqli \
-    pdo_mysql \
-    zip \
-    intl \
-    exif \
-    opcache \
-    redis \
-    imagick
-
-# Install WP CLI
-RUN curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    -o /usr/local/bin/wp \
- && chmod +x /usr/local/bin/wp
-
 WORKDIR /var/www/html
