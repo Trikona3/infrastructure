@@ -90,10 +90,7 @@ services:
     image: wordpress:cli-php8.3
 
     container_name: construwx-wpcli
-
-    profiles:
-      - tools
-
+  
     depends_on:
       mariadb:
         condition: service_healthy
