@@ -1,89 +1,66 @@
 # ConstruWX Appliance
 
-Single-container ConstruWX stack for side-by-side testing and disaster recovery.
+Single-container ConstruWX runtime for running or recovering the site on a fresh host.
 
 **Image:** `construwx-appliance:0.1`  
-**Compose:** [`compose/construwx-appliance`](.)  
-**Dockerfile:** [`images/construwx-appliance`](../../images/construwx-appliance)
+**Compose project:** this directory  
+**Image source:** [`images/construwx-appliance`](../../images/construwx-appliance)
 
-This runs **beside** the multi-container stack at [`compose/construwx`](../construwx). Do not point both at the same MariaDB/Redis data at the same time.
-
----
-
-## What it includes
-
-One image runs:
-
-| Component | Role |
-|-----------|------|
-| Nginx | HTTP on container port `80` (host `8099`) |
-| PHP-FPM 8.3 | WordPress runtime |
-| MariaDB 11 | Database (`127.0.0.1` inside the container) |
-| Redis | Local cache (starts empty; optional) |
-| Supervisor | Process manager |
-| WP-CLI | `/usr/local/bin/wp` |
-| WordPress core 7.0.2 | Baked at `/usr/src/wordpress`; synced into the volume on every start |
-
-On boot, the entrypoint:
-
-1. Ensures WordPress **core** (`wp-admin`, `wp-includes`, root PHP) is complete from the image  
-2. Does **not** overwrite `wp-content/`, `wp-config.php`, or `wp-salt.php`  
-3. Starts MariaDB, Redis, PHP-FPM, and Nginx under Supervisor  
-
-That fixes incomplete WordPress trees (e.g. missing `wp-admin/admin-ajax.php`) without wiping site content.
+One container provides Nginx, PHP-FPM 8.3, MariaDB 11, Redis, Supervisor, WP-CLI, and a complete WordPress core. Site content and the database live in **external Docker volumes** that you supply from backups.
 
 ---
 
-## Layout
+## What you need
+
+On a **new VPS** you need only:
+
+1. Docker Engine + Docker Compose v2  
+2. This repository (or the image tarball + this compose folder)  
+3. **Your backups** (you own storage and rotation — S3, another disk, USB, etc.)  
+4. A `.env` file with database credentials that match the restored site  
+
+Backups are **not** stored in this repo. Keep them somewhere durable; restoring without them cannot recreate posts, media, plugins, or the database.
+
+### Required backup set
+
+| Artifact | Required | Purpose |
+|----------|----------|---------|
+| `wordpress.tgz` | **Yes** | WordPress volume: `wp-content/`, `wp-config.php`, `wp-salt.php`, uploads, plugins, themes |
+| `mariadb.tgz` **or** `construwx.sql.gz` | **Yes** | Database (datadir archive **or** logical SQL dump) |
+| `env.backup` / `.env` | **Yes** | `DB_*` passwords and related settings must match the DB / `wp-config.php` |
+| `construwx-appliance-0.1.tar.gz` | Recommended | Pre-built image if you cannot build from this repo |
+| `redis.tgz` | No | Cache only; omit and start with an empty Redis volume |
+
+### Expected backup layout
+
+Any directory (local path, mounted bucket, etc.):
 
 ```text
-images/construwx-appliance/
-  Dockerfile
-  entrypoint.sh
-  nginx.conf
-  php-custom.ini
-  redis.conf
-  supervisord.conf
-  scripts/
-    ensure-wordpress-core.sh
-    wait-for-db.sh
-    import-db.sh
-
-compose/construwx-appliance/
-  docker-compose.yml
-  .env                 # secrets (not committed)
-  .gitignore
-  import/              # optional SQL seed (*.sql.gz, not committed)
-  README.md
+<backup-root>/
+  wordpress.tgz              # tar.gz of volume construwx_appliance_wordpress
+  mariadb.tgz                # tar.gz of volume construwx_appliance_mariadb
+  # OR, instead of mariadb.tgz:
+  construwx.sql.gz           # logical dump of database construwx
+  env.backup                 # copy of compose .env (restrict permissions)
+  construwx-appliance-0.1.tar.gz   # optional: docker save of the image
+  redis.tgz                  # optional
 ```
 
-### Persistent volumes (Docker named volumes)
+**`wordpress.tgz` / `mariadb.tgz` format:** gzip-compressed tar of the volume **root** (contents of `/data`, not an extra top-level folder):
 
-| Volume name | Mount | What to keep |
-|-------------|-------|--------------|
-| `construwx_appliance_wordpress` | `/data/wordpress` | `wp-content/`, `wp-config.php`, `wp-salt.php`, uploads, plugins, themes |
-| `construwx_appliance_mariadb` | `/data/mariadb` | MariaDB datadir (required for site content) |
-| `construwx_appliance_redis` | `/data/redis` | Redis AOF/RDB (cache only; safe to discard) |
-
-Compose declares these as **external** volumes with fixed names so backups and restores stay predictable.
-
-**Where Docker stores them on Linux (default):**
-
-```text
-/var/lib/docker/volumes/construwx_appliance_wordpress/_data
-/var/lib/docker/volumes/construwx_appliance_mariadb/_data
-/var/lib/docker/volumes/construwx_appliance_redis/_data
+```bash
+# how archives are produced
+tar czf wordpress.tgz -C /path/to/volume/_data .
+tar czf mariadb.tgz   -C /path/to/volume/_data .
 ```
 
-Prefer `docker` volume commands over editing those paths by hand.
+**`construwx.sql.gz` format:** `mariadb-dump` / `mysqldump` of database `construwx` (gzip), importable with:
 
----
+```bash
+zcat construwx.sql.gz | mariadb -u root -p… construwx
+```
 
-## Prerequisites
-
-- Docker Engine + Compose v2  
-- Free host port **8099** (8088 is often used by other stacks on this host)  
-- `.env` with at least:
+**`.env` keys used by compose** (minimum):
 
 ```env
 DB_NAME=construwx
@@ -93,143 +70,198 @@ DB_ROOT_PASSWORD=...
 TZ=America/Denver
 ```
 
-Copy from the multi-container stack if seeding from it:
-
-```bash
-cp /opt/infrastructure/compose/construwx/.env \
-   /opt/infrastructure/compose/construwx-appliance/.env
-```
+`wp-config.php` inside the wordpress backup must use `DB_HOST` `127.0.0.1` (or `localhost`) for this appliance — not a remote Compose service name.
 
 ---
 
-## Quick start
+## Architecture
+
+```text
+construwx-appliance:0.1
+  ├── Nginx          → host :8099 → container :80
+  ├── PHP-FPM 8.3
+  ├── MariaDB 11     → datadir /data/mariadb
+  ├── Redis          → /data/redis (disposable)
+  ├── WP-CLI
+  └── Supervisor
+
+Volumes (external, fixed names):
+  construwx_appliance_wordpress  → /data/wordpress
+  construwx_appliance_mariadb    → /data/mariadb
+  construwx_appliance_redis      → /data/redis
+```
+
+On every start the entrypoint syncs WordPress **core** (`wp-admin`, `wp-includes`, root PHP) from the image into `/data/wordpress`. It does **not** overwrite `wp-content/`, `wp-config.php`, or `wp-salt.php`. That keeps core complete even if a backup tree was missing files such as `admin-ajax.php`.
+
+Default host port is **8099**. Change `ports` in `docker-compose.yml` if needed.
+
+---
+
+## Fresh VPS setup
+
+### 1. Install Docker
+
+Example on Ubuntu:
 
 ```bash
-cd /opt/infrastructure/compose/construwx-appliance
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Create volumes once
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo usermod -aG docker "$USER"   # re-login after this
+docker version
+docker compose version
+```
+
+### 2. Get the compose project and image
+
+**Option A — clone and build**
+
+```bash
+git clone <this-repo-url> /opt/infrastructure
+cd /opt/infrastructure/compose/construwx-appliance
+docker compose build
+```
+
+**Option B — load a saved image**
+
+```bash
+# place compose files under /opt/infrastructure/compose/construwx-appliance
+gunzip -c /path/to/construwx-appliance-0.1.tar.gz | docker load
+# image name must be: construwx-appliance:0.1
+```
+
+### 3. Create volumes
+
+```bash
 docker volume create construwx_appliance_wordpress
 docker volume create construwx_appliance_mariadb
 docker volume create construwx_appliance_redis
-
-# Build and run
-docker compose build
-docker compose up -d
-
-docker logs -f construwx-appliance
-curl -sI http://localhost:8099/
 ```
 
-### First-time seed from the live multi-container stack
+Default data dirs on Linux:
 
-Keep the live stack running. Use **copies / SQL**, never the live MariaDB datadir.
+```text
+/var/lib/docker/volumes/construwx_appliance_wordpress/_data
+/var/lib/docker/volumes/construwx_appliance_mariadb/_data
+/var/lib/docker/volumes/construwx_appliance_redis/_data
+```
 
-**1. WordPress files → volume**
+### 4. Restore backups into volumes
+
+Set `BACKUP` to wherever you keep the archive set:
 
 ```bash
-docker volume create construwx_appliance_wordpress
+BACKUP=/path/to/your/backup-root   # your responsibility — any durable location
 
 docker run --rm \
-  -v /opt/infrastructure/compose/construwx/data/wordpress:/src:ro \
-  -v construwx_appliance_wordpress:/dest \
-  alpine sh -c 'apk add --no-cache rsync && rsync -a /src/ /dest/'
+  -v construwx_appliance_wordpress:/data \
+  -v "$BACKUP":/backup:ro \
+  alpine sh -c 'cd /data && tar xzf /backup/wordpress.tgz'
+
+# If you have a MariaDB datadir archive:
+docker run --rm \
+  -v construwx_appliance_mariadb:/data \
+  -v "$BACKUP":/backup:ro \
+  alpine sh -c 'cd /data && tar xzf /backup/mariadb.tgz'
+
+# Optional Redis
+# docker run --rm \
+#   -v construwx_appliance_redis:/data \
+#   -v "$BACKUP":/backup:ro \
+#   alpine sh -c 'cd /data && tar xzf /backup/redis.tgz'
 ```
 
-**2. Point the appliance copy at local DB (do not edit the live `wp-config.php`)**
-
-```bash
-docker run --rm -v construwx_appliance_wordpress:/dest alpine \
-  sed -i "s/define( 'DB_HOST', 'mariadb' );/define( 'DB_HOST', '127.0.0.1' );/" \
-  /dest/wp-config.php
-```
-
-For local HTTP testing on port 8099, set domain / URLs to `localhost:8099` (WP-CLI inside the running appliance is preferred):
-
-```bash
-docker exec -w /data/wordpress construwx-appliance \
-  wp --allow-root --url=http://localhost:8099/ option get siteurl
-```
-
-**3. Database → SQL import (not a live datadir copy)**
-
-Stage a dump (example uses the existing gz dump):
+If you restore **SQL instead of** `mariadb.tgz`, leave the MariaDB volume empty, copy the dump for the container to read, then import after first start (step 6).
 
 ```bash
 mkdir -p import
-cp /opt/infrastructure/compose/construwx/myedt006_mydev.sql.gz \
-   import/construwx.sql.gz
+cp "$BACKUP/construwx.sql.gz" import/construwx.sql.gz
 ```
 
-Start the appliance so MariaDB initializes the empty volume, then:
+### 5. Install `.env`
 
 ```bash
-docker compose up -d
-docker exec construwx-appliance construwx-import-db
+cp "$BACKUP/env.backup" .env
+chmod 600 .env
 ```
 
-Or:
-
-```bash
-docker exec construwx-appliance bash -lc \
-  'zcat /import/construwx.sql.gz | mariadb -u root -p"$MARIADB_ROOT_PASSWORD" "$MARIADB_DATABASE"'
-```
-
-**4. Redis**
-
-No seed required. Cache only.
-
----
-
-## Day-to-day usage
+### 6. Start
 
 ```bash
 cd /opt/infrastructure/compose/construwx-appliance
-
 docker compose up -d
-docker compose down          # stops container; volumes kept
-docker compose logs -f
-docker exec -it construwx-appliance bash
+docker logs -f construwx-appliance
 ```
 
-### WP-CLI
+You should see:
+
+```text
+Ensuring WordPress core in /data/wordpress from /usr/src/wordpress...
+WordPress core OK (admin-ajax.php present).
+Starting ConstruWX appliance...
+```
+
+**SQL-only restore** (empty MariaDB volume + `import/construwx.sql.gz`):
 
 ```bash
-docker exec -w /data/wordpress construwx-appliance \
-  wp --allow-root --url=http://localhost:8099/ core version
-
-docker exec -w /data/wordpress construwx-appliance \
-  wp --allow-root --url=http://localhost:8099/ plugin list
+docker exec construwx-appliance construwx-import-db
 ```
 
-### Browser access
+### 7. Verify
 
-- On the VPS: `http://localhost:8099/`  
-- From your laptop (recommended while domain is `localhost:8099`):
+```bash
+curl -sI http://localhost:8099/
+docker exec -w /data/wordpress construwx-appliance \
+  wp --allow-root --url=http://localhost:8099/ core version
+```
+
+Open `http://YOUR_VPS_IP:8099/` only if the restored site’s domain/`siteurl` match that host. If the backup was taken for `http://localhost:8099`, use an SSH tunnel from your laptop:
 
 ```bash
 ssh -L 8099:127.0.0.1:8099 USER@YOUR_VPS_IP
 ```
 
-Then open `http://localhost:8099/`.
-
-Login UI for this site is typically `/trikona-login/` (not `/wp-login.php`).
-
-Nginx Proxy Manager is **not** wired in V1; prove the appliance on `8099` first.
+Then browse `http://localhost:8099/`. Update domain URLs with WP-CLI if you want a public hostname.
 
 ---
 
-## Backup
+## Day-to-day commands
 
-Back up **wordpress** + **mariadb** volumes. Redis is optional.
+```bash
+cd /opt/infrastructure/compose/construwx-appliance
 
-### Option A — volume archives (simple DR)
+docker compose up -d
+docker compose down          # volumes are kept
+docker compose logs -f
+docker exec -it construwx-appliance bash
+
+docker exec -w /data/wordpress construwx-appliance \
+  wp --allow-root --url=http://localhost:8099/ plugin list
+```
+
+Login for this product is typically `/trikona-login/`.
+
+---
+
+## Creating backups (your job)
+
+Run on a healthy appliance host. Store the output **anywhere you control**.
 
 ```bash
 TS=$(date -u +%Y%m%dT%H%M%SZ)
-OUT=/opt/infrastructure/backups/construwx-appliance-$TS
+OUT=/path/to/your/backup-root/construwx-appliance-$TS
 mkdir -p "$OUT"
 
-# Prefer a quiet DB: stop appliance briefly, or use mariadb-dump instead of raw files
 cd /opt/infrastructure/compose/construwx-appliance
 docker compose stop
 
@@ -245,92 +277,25 @@ docker run --rm \
 
 docker compose start
 
-# Optional
-docker run --rm \
-  -v construwx_appliance_redis:/data:ro \
-  -v "$OUT":/backup \
-  alpine tar czf /backup/redis.tgz -C /data .
-```
+cp .env "$OUT/env.backup"
+chmod 600 "$OUT/env.backup"
 
-Also save the image and env:
-
-```bash
 docker save construwx-appliance:0.1 | gzip > "$OUT/construwx-appliance-0.1.tar.gz"
-cp .env "$OUT/env.backup"   # keep offline / encrypted
 ```
 
-### Option B — logical DB dump (portable)
-
-While the appliance is running:
+Logical DB dump (optional complement or alternative to `mariadb.tgz`):
 
 ```bash
 docker exec construwx-appliance bash -lc \
   'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" --single-transaction --routines --triggers "$MARIADB_DATABASE"' \
-  | gzip > construwx-db-$(date -u +%Y%m%d).sql.gz
+  | gzip > "$OUT/construwx.sql.gz"
 ```
 
-Pair with an rsync/tarball of the wordpress volume (or at least `wp-content` + `wp-config.php` + `wp-salt.php`).
-
-### Suggested backup location on this host
-
-```text
-/opt/infrastructure/backups/construwx-appliance-<timestamp>/
-  wordpress.tgz
-  mariadb.tgz
-  redis.tgz                 # optional
-  construwx-appliance-0.1.tar.gz
-  env.backup                # secrets — restrict permissions
-```
-
-Keep backups off-box (S3, another VPS, etc.) for real DR.
+Copy `$OUT` off the machine. Losing the VPS without an off-box copy loses the site.
 
 ---
 
-## Restore / recreate from image + volumes
-
-You can recreate the **entire site** from:
-
-1. Image `construwx-appliance:0.1` (runtime + WP core)  
-2. Volume `construwx_appliance_wordpress` (site files / config / uploads)  
-3. Volume `construwx_appliance_mariadb` (database)  
-4. Volume `construwx_appliance_redis` (optional; empty is fine)  
-5. `.env` with DB credentials matching the datadir / `wp-config.php`
-
-```bash
-# Load image if needed
-gunzip -c construwx-appliance-0.1.tar.gz | docker load
-
-docker volume create construwx_appliance_wordpress
-docker volume create construwx_appliance_mariadb
-docker volume create construwx_appliance_redis
-
-# Restore tarballs into volumes
-docker run --rm \
-  -v construwx_appliance_wordpress:/data \
-  -v /path/to/backup:/backup:ro \
-  alpine sh -c 'cd /data && tar xzf /backup/wordpress.tgz'
-
-docker run --rm \
-  -v construwx_appliance_mariadb:/data \
-  -v /path/to/backup:/backup:ro \
-  alpine sh -c 'cd /data && tar xzf /backup/mariadb.tgz'
-
-cp /path/to/backup/env.backup /opt/infrastructure/compose/construwx-appliance/.env
-
-cd /opt/infrastructure/compose/construwx-appliance
-docker compose up -d
-```
-
-Fresh DB from SQL instead of a datadir tarball:
-
-```bash
-# empty mariadb volume + import/construwx.sql.gz
-docker exec construwx-appliance construwx-import-db
-```
-
----
-
-## Rebuild image
+## Rebuild image from source
 
 ```bash
 cd /opt/infrastructure/compose/construwx-appliance
@@ -338,37 +303,32 @@ docker compose build --no-cache
 docker compose up -d --force-recreate
 ```
 
-After recreate, logs should show:
-
-```text
-Ensuring WordPress core in /data/wordpress from /usr/src/wordpress...
-WordPress core OK (admin-ajax.php present).
-Starting ConstruWX appliance...
-```
-
----
-
-## Important constraints
-
-- **Do not** mount live `compose/construwx/data/mariadb` (or redis) into the appliance while the multi-container stack is running.  
-- Appliance WordPress must use `DB_HOST` `127.0.0.1`, not Compose hostname `mariadb`.  
-- Domain in this test setup is often `localhost:8099`; browsing via raw VPS IP will not match that host without SSH tunnel or a domain change.  
-- Image alone is not a full backup — **volumes (or SQL + wp-content) hold the site**.
-
 ---
 
 ## Troubleshooting
 
-| Symptom | Likely cause |
+| Symptom | What to check |
 |---------|----------------|
-| Login POST `404` / `Primary script unknown` | Incomplete WP core — recreate container so core sync runs, or `wp core download --force --skip-content` |
-| Redirect to production domain | `DOMAIN_CURRENT_SITE` / `siteurl` / `home` still old — fix with WP-CLI on the appliance only |
-| Redirect loop on `:8099` | Nginx must pass `$http_host` (with port) as `HTTP_HOST` — already in image `nginx.conf` |
-| Port bind error on `8099` | Something else listening; change host port in `docker-compose.yml` |
+| Login AJAX 404 / `Primary script unknown` | Core sync on boot; confirm `wp-admin/admin-ajax.php` exists after recreate |
+| Redirects to wrong domain | Restored `siteurl` / `home` / multisite domain — fix with WP-CLI |
+| DB access denied | `.env` does not match restored datadir or `wp-config.php` |
+| Empty site | Wordpress or MariaDB volume not restored / wrong tar layout |
 
 ```bash
 docker logs construwx-appliance --tail 100
 docker exec construwx-appliance ls -la /data/wordpress/wp-admin/admin-ajax.php
 curl -sI http://localhost:8099/
-curl -sI http://localhost:8099/trikona-login/
 ```
+
+---
+
+## Summary
+
+| Piece | Who provides it |
+|-------|-----------------|
+| Docker + Compose | You, on the new VPS |
+| Image `construwx-appliance:0.1` | Build from this repo or `docker load` your saved image |
+| Volumes + `.env` | **Your backups** (required; store them yourself) |
+| Redis | Optional / empty |
+
+**Image + wordpress volume + mariadb volume (or SQL) + `.env` = full site recovery.**
