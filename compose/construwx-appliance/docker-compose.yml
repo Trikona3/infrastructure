@@ -1,0 +1,35 @@
+name: construwx-appliance
+
+services:
+  construwx:
+    build:
+      context: ../../images/construwx-appliance
+    image: construwx-appliance:0.1
+    container_name: construwx-appliance
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      TZ: ${TZ}
+    ports:
+      - "8099:80"
+    volumes:
+      - construwx_appliance_wordpress:/data/wordpress
+      - construwx_appliance_mariadb:/data/mariadb
+      - construwx_appliance_redis:/data/redis
+      - ./import:/import:ro
+
+volumes:
+  construwx_appliance_wordpress:
+    name: construwx_appliance_wordpress
+    external: true
+  construwx_appliance_mariadb:
+    name: construwx_appliance_mariadb
+    external: true
+  construwx_appliance_redis:
+    name: construwx_appliance_redis
+    external: true

@@ -1,0 +1,4 @@
+.env
+import/*.sql
+import/*.sql.gz
+!import/.gitkeep
