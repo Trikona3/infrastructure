@@ -28,7 +28,12 @@ services:
 
     networks:
       - construwx-net
-
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      
   redis:
     image: redis:7-alpine
     container_name: construwx-redis
@@ -96,7 +101,7 @@ services:
 
     volumes:
       - ./data/wordpress:/var/www/html
-
+      - ./config/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     working_dir: /var/www/html
 
     networks:

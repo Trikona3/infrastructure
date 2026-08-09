@@ -1,1 +1,14 @@
 .env
+
+# Ignore everything under data/, but keep the top-level folders via .gitkeep
+data/*
+!data/.gitkeep
+!data/mariadb/
+!data/redis/
+!data/wordpress/
+data/mariadb/**
+data/redis/**
+data/wordpress/**
+!data/mariadb/.gitkeep
+!data/redis/.gitkeep
+!data/wordpress/.gitkeep

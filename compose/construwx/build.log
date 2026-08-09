@@ -1,0 +1,731 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from dockerfile
+#1 transferring dockerfile: 743B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/wordpress:6.8-php8.3-fpm
+#2 ...
+
+#3 [internal] load metadata for ghcr.io/mlocati/php-extension-installer:latest
+#3 DONE 0.5s
+
+#2 [internal] load metadata for docker.io/library/wordpress:6.8-php8.3-fpm
+#2 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [stage-0 1/6] FROM docker.io/library/wordpress:6.8-php8.3-fpm@sha256:906c25725c2edccb7809851f61f98560ea73b6c01d482d69d1b9fdf04b5ff75f
+#5 resolve docker.io/library/wordpress:6.8-php8.3-fpm@sha256:906c25725c2edccb7809851f61f98560ea73b6c01d482d69d1b9fdf04b5ff75f 0.0s done
+#5 CACHED
+
+#6 FROM ghcr.io/mlocati/php-extension-installer:latest@sha256:b6d3fa381b9ba5cf051117c1c601d6a523b590e534bf3d56eb4fbe352949c138
+#6 resolve ghcr.io/mlocati/php-extension-installer:latest@sha256:b6d3fa381b9ba5cf051117c1c601d6a523b590e534bf3d56eb4fbe352949c138 0.0s done
+#6 CACHED
+
+#7 [stage-0 2/6] COPY --from=ghcr.io/mlocati/php-extension-installer:latest     /usr/bin/install-php-extensions     /usr/local/bin/
+#7 DONE 0.0s
+
+#8 [stage-0 3/6] RUN apt-get update && apt-get install -y     git     unzip     zip     curl     wget     vim     default-mysql-client     imagemagick  && rm -rf /var/lib/apt/lists/*
+#8 0.150 Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+#8 0.161 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#8 0.161 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#8 0.175 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9673 kB]
+#8 0.266 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [4412 B]
+#8 0.267 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [236 kB]
+#8 0.800 Fetched 10.1 MB in 1s (15.4 MB/s)
+#8 0.800 Reading package lists...
+#8 1.275 Reading package lists...
+#8 1.768 Building dependency tree...
+#8 1.920 Reading state information...
+#8 2.044 The following additional packages will be installed:
+#8 2.044   fontconfig git-man hicolor-icon-theme imagemagick-7-common imagemagick-7.q16
+#8 2.044   less libcairo2 libcbor0.10 libconfig-inifiles-perl libcurl3t64-gnutls
+#8 2.044   libcurl4t64 libdatrie1 libdbd-mariadb-perl libdbi-perl libdjvulibre-text
+#8 2.045   libdjvulibre21 libedit2 liberror-perl libfido2-1 libfribidi0 libgpm2
+#8 2.045   libgraphite2-3 libharfbuzz0b libimath-3-1-29t64 libjxr-tools libjxr0t64
+#8 2.045   libmagickcore-7.q16-10 libmagickcore-7.q16-10-extra libmagickwand-7.q16-10
+#8 2.045   libmariadb3 libncurses6 libnetpbm11t64 libngtcp2-16 libngtcp2-crypto-gnutls8
+#8 2.045   libopenexr-3-1-30 libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0
+#8 2.045   libpcre2-posix3 libpixman-1-0 libterm-readkey-perl libthai-data libthai0
+#8 2.045   libwmflite-0.2-7 libxcb-render0 libxcb-shm0 libxmuu1 libxrender1
+#8 2.045   mariadb-client mariadb-client-compat mariadb-client-core mariadb-common
+#8 2.045   mysql-common netpbm openssh-client vim-common vim-runtime xauth xxd
+#8 2.046 Suggested packages:
+#8 2.046   gettext-base git-doc git-email git-gui gitk gitweb git-cvs git-mediawiki
+#8 2.046   git-svn imagemagick-7-doc autotrace cups-bsd | lpr | lprng enscript ffmpeg
+#8 2.046   gimp gnuplot grads graphviz groff-base hp2xx html2ps libwmf-bin mplayer
+#8 2.046   povray radiance sane-utils texlive-base-bin transfig libraw-bin xdg-utils
+#8 2.046   libclone-perl libmldbm-perl libnet-daemon-perl libsql-statement-perl gpm
+#8 2.046   inkscape keychain libpam-ssh monkeysphere ssh-askpass ctags vim-doc
+#8 2.046   vim-scripts
+#8 2.272 The following NEW packages will be installed:
+#8 2.272   default-mysql-client fontconfig git git-man hicolor-icon-theme imagemagick
+#8 2.272   imagemagick-7.q16 less libcairo2 libcbor0.10 libconfig-inifiles-perl
+#8 2.272   libcurl3t64-gnutls libdatrie1 libdbd-mariadb-perl libdbi-perl
+#8 2.272   libdjvulibre-text libdjvulibre21 libedit2 liberror-perl libfido2-1
+#8 2.272   libfribidi0 libgpm2 libgraphite2-3 libharfbuzz0b libimath-3-1-29t64
+#8 2.272   libjxr-tools libjxr0t64 libmagickcore-7.q16-10-extra libmariadb3 libncurses6
+#8 2.272   libnetpbm11t64 libngtcp2-16 libngtcp2-crypto-gnutls8 libopenexr-3-1-30
+#8 2.272   libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libpcre2-posix3
+#8 2.274   libpixman-1-0 libterm-readkey-perl libthai-data libthai0 libwmflite-0.2-7
+#8 2.274   libxcb-render0 libxcb-shm0 libxmuu1 libxrender1 mariadb-client
+#8 2.274   mariadb-client-compat mariadb-client-core mariadb-common mysql-common netpbm
+#8 2.274   openssh-client unzip vim vim-common vim-runtime wget xauth xxd zip
+#8 2.274 The following packages will be upgraded:
+#8 2.274   curl imagemagick-7-common libcurl4t64 libmagickcore-7.q16-10
+#8 2.274   libmagickwand-7.q16-10
+#8 2.298 5 upgraded, 62 newly installed, 0 to remove and 45 not upgraded.
+#8 2.298 Need to get 39.9 MB of archives.
+#8 2.298 After this operation, 225 MB of additional disk space will be used.
+#8 2.298 Get:1 http://deb.debian.org/debian-security trixie-security/main amd64 imagemagick-7-common all 8:7.1.1.43+dfsg1-1+deb13u11 [76.8 kB]
+#8 2.303 Get:2 http://deb.debian.org/debian-security trixie-security/main amd64 libmagickcore-7.q16-10 amd64 8:7.1.1.43+dfsg1-1+deb13u11 [1859 kB]
+#8 2.323 Get:3 http://deb.debian.org/debian-security trixie-security/main amd64 libmagickwand-7.q16-10 amd64 8:7.1.1.43+dfsg1-1+deb13u11 [354 kB]
+#8 2.328 Get:4 http://deb.debian.org/debian trixie/main amd64 less amd64 668-1 [161 kB]
+#8 2.332 Get:5 http://deb.debian.org/debian trixie/main amd64 vim-common all 2:9.1.1230-2 [421 kB]
+#8 2.336 Get:6 http://deb.debian.org/debian trixie/main amd64 libedit2 amd64 3.1-20250104-1 [93.8 kB]
+#8 2.336 Get:7 http://deb.debian.org/debian trixie/main amd64 libcbor0.10 amd64 0.10.2-2 [28.3 kB]
+#8 2.336 Get:8 http://deb.debian.org/debian trixie/main amd64 libfido2-1 amd64 1.15.0-1+b1 [78.7 kB]
+#8 2.340 Get:9 http://deb.debian.org/debian trixie/main amd64 openssh-client amd64 1:10.0p1-7+deb13u4 [990 kB]
+#8 2.351 Get:10 http://deb.debian.org/debian trixie/main amd64 wget amd64 1.25.0-2 [984 kB]
+#8 2.362 Get:11 http://deb.debian.org/debian trixie/main amd64 curl amd64 8.14.1-2+deb13u4 [270 kB]
+#8 2.364 Get:12 http://deb.debian.org/debian trixie/main amd64 libcurl4t64 amd64 8.14.1-2+deb13u4 [392 kB]
+#8 2.367 Get:13 http://deb.debian.org/debian trixie/main amd64 libconfig-inifiles-perl all 3.000003-3+deb13u1 [45.0 kB]
+#8 2.367 Get:14 http://deb.debian.org/debian trixie/main amd64 mysql-common all 5.8+1.1.1 [6784 B]
+#8 2.367 Get:15 http://deb.debian.org/debian trixie/main amd64 mariadb-common all 1:11.8.6-0+deb13u1 [29.5 kB]
+#8 2.370 Get:16 http://deb.debian.org/debian trixie/main amd64 libmariadb3 amd64 1:11.8.6-0+deb13u1 [187 kB]
+#8 2.371 Get:17 http://deb.debian.org/debian trixie/main amd64 libncurses6 amd64 6.5+20250216-2 [105 kB]
+#8 2.375 Get:18 http://deb.debian.org/debian trixie/main amd64 mariadb-client-core amd64 1:11.8.6-0+deb13u1 [919 kB]
+#8 2.383 Get:19 http://deb.debian.org/debian trixie/main amd64 libpcre2-posix3 amd64 10.46-1~deb13u1 [63.9 kB]
+#8 2.383 Get:20 http://deb.debian.org/debian trixie/main amd64 mariadb-client amd64 1:11.8.6-0+deb13u1 [3164 kB]
+#8 2.409 Get:21 http://deb.debian.org/debian trixie/main amd64 mariadb-client-compat all 1:11.8.6-0+deb13u1 [29.7 kB]
+#8 2.409 Get:22 http://deb.debian.org/debian trixie/main amd64 default-mysql-client all 1.1.1 [3028 B]
+#8 2.410 Get:23 http://deb.debian.org/debian trixie/main amd64 fontconfig amd64 2.15.0-2.3 [463 kB]
+#8 2.412 Get:24 http://deb.debian.org/debian trixie/main amd64 libngtcp2-16 amd64 1.11.0-1+deb13u1 [132 kB]
+#8 2.414 Get:25 http://deb.debian.org/debian trixie/main amd64 libngtcp2-crypto-gnutls8 amd64 1.11.0-1+deb13u1 [29.5 kB]
+#8 2.416 Get:26 http://deb.debian.org/debian trixie/main amd64 libcurl3t64-gnutls amd64 8.14.1-2+deb13u4 [384 kB]
+#8 2.420 Get:27 http://deb.debian.org/debian trixie/main amd64 liberror-perl all 0.17030-1 [26.9 kB]
+#8 2.420 Get:28 http://deb.debian.org/debian trixie/main amd64 git-man all 1:2.47.3-0+deb13u1 [2205 kB]
+#8 2.438 Get:29 http://deb.debian.org/debian trixie/main amd64 git amd64 1:2.47.3-0+deb13u1 [8862 kB]
+#8 2.509 Get:30 http://deb.debian.org/debian trixie/main amd64 hicolor-icon-theme all 0.18-2 [11.8 kB]
+#8 2.510 Get:31 http://deb.debian.org/debian-security trixie-security/main amd64 imagemagick-7.q16 amd64 8:7.1.1.43+dfsg1-1+deb13u11 [736 kB]
+#8 2.515 Get:32 http://deb.debian.org/debian-security trixie-security/main amd64 imagemagick amd64 8:7.1.1.43+dfsg1-1+deb13u11 [29.4 kB]
+#8 2.515 Get:33 http://deb.debian.org/debian trixie/main amd64 libpixman-1-0 amd64 0.44.0-3 [248 kB]
+#8 2.517 Get:34 http://deb.debian.org/debian trixie/main amd64 libxcb-render0 amd64 1.17.0-2+b1 [115 kB]
+#8 2.518 Get:35 http://deb.debian.org/debian trixie/main amd64 libxcb-shm0 amd64 1.17.0-2+b1 [105 kB]
+#8 2.519 Get:36 http://deb.debian.org/debian trixie/main amd64 libxrender1 amd64 1:0.9.12-1 [27.9 kB]
+#8 2.519 Get:37 http://deb.debian.org/debian trixie/main amd64 libcairo2 amd64 1.18.4-1+b1 [538 kB]
+#8 2.523 Get:38 http://deb.debian.org/debian trixie/main amd64 libdatrie1 amd64 0.2.13-3+b1 [38.1 kB]
+#8 2.526 Get:39 http://deb.debian.org/debian trixie/main amd64 libdbi-perl amd64 1.647-1+deb13u1 [861 kB]
+#8 2.533 Get:40 http://deb.debian.org/debian trixie/main amd64 libdbd-mariadb-perl amd64 1.22-1+b4 [93.6 kB]
+#8 2.534 Get:41 http://deb.debian.org/debian trixie/main amd64 libdjvulibre-text all 3.5.28-2.2 [52.0 kB]
+#8 2.537 Get:42 http://deb.debian.org/debian trixie/main amd64 libdjvulibre21 amd64 3.5.28-2.2 [610 kB]
+#8 2.542 Get:43 http://deb.debian.org/debian trixie/main amd64 libfribidi0 amd64 1.0.16-1 [26.5 kB]
+#8 2.542 Get:44 http://deb.debian.org/debian trixie/main amd64 libgpm2 amd64 1.20.7-11+b2 [14.4 kB]
+#8 2.542 Get:45 http://deb.debian.org/debian trixie/main amd64 libgraphite2-3 amd64 1.3.14-2+deb13u1 [75.2 kB]
+#8 2.545 Get:46 http://deb.debian.org/debian trixie/main amd64 libharfbuzz0b amd64 10.2.0-1+deb13u1 [479 kB]
+#8 2.549 Get:47 http://deb.debian.org/debian trixie/main amd64 libimath-3-1-29t64 amd64 3.1.12-1+b3 [45.5 kB]
+#8 2.552 Get:48 http://deb.debian.org/debian trixie/main amd64 libjxr0t64 amd64 1.2~git20170615.f752187-5.3 [171 kB]
+#8 2.553 Get:49 http://deb.debian.org/debian trixie/main amd64 libjxr-tools amd64 1.2~git20170615.f752187-5.3 [16.9 kB]
+#8 2.556 Get:50 http://deb.debian.org/debian trixie/main amd64 libopenexr-3-1-30 amd64 3.1.13-2 [945 kB]
+#8 2.567 Get:51 http://deb.debian.org/debian trixie/main amd64 libthai-data all 0.1.29-2 [168 kB]
+#8 2.568 Get:52 http://deb.debian.org/debian trixie/main amd64 libthai0 amd64 0.1.29-2+b1 [49.4 kB]
+#8 2.568 Get:53 http://deb.debian.org/debian trixie/main amd64 libpango-1.0-0 amd64 1.56.3-1 [226 kB]
+#8 2.570 Get:54 http://deb.debian.org/debian trixie/main amd64 libpangoft2-1.0-0 amd64 1.56.3-1 [55.6 kB]
+#8 2.571 Get:55 http://deb.debian.org/debian trixie/main amd64 libpangocairo-1.0-0 amd64 1.56.3-1 [35.7 kB]
+#8 2.571 Get:56 http://deb.debian.org/debian trixie/main amd64 libwmflite-0.2-7 amd64 0.2.13-1.1+b3 [75.6 kB]
+#8 2.571 Get:57 http://deb.debian.org/debian-security trixie-security/main amd64 libmagickcore-7.q16-10-extra amd64 8:7.1.1.43+dfsg1-1+deb13u11 [82.3 kB]
+#8 2.575 Get:58 http://deb.debian.org/debian trixie/main amd64 libnetpbm11t64 amd64 2:11.10.02-1 [184 kB]
+#8 2.576 Get:59 http://deb.debian.org/debian trixie/main amd64 libterm-readkey-perl amd64 2.38-2+b4 [24.6 kB]
+#8 2.576 Get:60 http://deb.debian.org/debian trixie/main amd64 libxmuu1 amd64 2:1.1.3-3+b4 [21.9 kB]
+#8 2.579 Get:61 http://deb.debian.org/debian trixie/main amd64 netpbm amd64 2:11.10.02-1 [2083 kB]
+#8 2.596 Get:62 http://deb.debian.org/debian trixie/main amd64 unzip amd64 6.0-29 [173 kB]
+#8 2.597 Get:63 http://deb.debian.org/debian trixie/main amd64 vim-runtime all 2:9.1.1230-2 [7127 kB]
+#8 2.658 Get:64 http://deb.debian.org/debian trixie/main amd64 vim amd64 2:9.1.1230-2 [1670 kB]
+#8 2.671 Get:65 http://deb.debian.org/debian trixie/main amd64 xauth amd64 1:1.1.2-1.1 [35.9 kB]
+#8 2.671 Get:66 http://deb.debian.org/debian trixie/main amd64 xxd amd64 2:9.1.1230-2 [98.8 kB]
+#8 2.672 Get:67 http://deb.debian.org/debian trixie/main amd64 zip amd64 3.0-15 [235 kB]
+#8 2.789 debconf: unable to initialize frontend: Dialog
+#8 2.789 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#8 2.789 debconf: falling back to frontend: Readline
+#8 2.795 debconf: unable to initialize frontend: Readline
+#8 2.795 debconf: (This frontend requires a controlling tty.)
+#8 2.795 debconf: falling back to frontend: Teletype
+#8 2.798 debconf: unable to initialize frontend: Teletype
+#8 2.798 debconf: (This frontend requires a controlling tty.)
+#8 2.798 debconf: falling back to frontend: Noninteractive
+#8 4.138 Fetched 39.9 MB in 0s (102 MB/s)
+#8 4.152 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17120 files and directories currently installed.)
+#8 4.160 Preparing to unpack .../00-imagemagick-7-common_8%3a7.1.1.43+dfsg1-1+deb13u11_all.deb ...
+#8 4.163 Unpacking imagemagick-7-common (8:7.1.1.43+dfsg1-1+deb13u11) over (8:7.1.1.43+dfsg1-1+deb13u3) ...
+#8 4.191 Preparing to unpack .../01-libmagickcore-7.q16-10_8%3a7.1.1.43+dfsg1-1+deb13u11_amd64.deb ...
+#8 4.195 Unpacking libmagickcore-7.q16-10:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) over (8:7.1.1.43+dfsg1-1+deb13u3) ...
+#8 4.409 Preparing to unpack .../02-libmagickwand-7.q16-10_8%3a7.1.1.43+dfsg1-1+deb13u11_amd64.deb ...
+#8 4.412 Unpacking libmagickwand-7.q16-10:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) over (8:7.1.1.43+dfsg1-1+deb13u3) ...
+#8 4.443 Selecting previously unselected package less.
+#8 4.445 Preparing to unpack .../03-less_668-1_amd64.deb ...
+#8 4.447 Unpacking less (668-1) ...
+#8 4.465 Selecting previously unselected package vim-common.
+#8 4.466 Preparing to unpack .../04-vim-common_2%3a9.1.1230-2_all.deb ...
+#8 4.467 Unpacking vim-common (2:9.1.1230-2) ...
+#8 4.493 Selecting previously unselected package libedit2:amd64.
+#8 4.494 Preparing to unpack .../05-libedit2_3.1-20250104-1_amd64.deb ...
+#8 4.496 Unpacking libedit2:amd64 (3.1-20250104-1) ...
+#8 4.512 Selecting previously unselected package libcbor0.10:amd64.
+#8 4.514 Preparing to unpack .../06-libcbor0.10_0.10.2-2_amd64.deb ...
+#8 4.515 Unpacking libcbor0.10:amd64 (0.10.2-2) ...
+#8 4.527 Selecting previously unselected package libfido2-1:amd64.
+#8 4.529 Preparing to unpack .../07-libfido2-1_1.15.0-1+b1_amd64.deb ...
+#8 4.530 Unpacking libfido2-1:amd64 (1.15.0-1+b1) ...
+#8 4.547 Selecting previously unselected package openssh-client.
+#8 4.548 Preparing to unpack .../08-openssh-client_1%3a10.0p1-7+deb13u4_amd64.deb ...
+#8 4.552 Unpacking openssh-client (1:10.0p1-7+deb13u4) ...
+#8 4.600 Selecting previously unselected package wget.
+#8 4.602 Preparing to unpack .../09-wget_1.25.0-2_amd64.deb ...
+#8 4.604 Unpacking wget (1.25.0-2) ...
+#8 4.644 Preparing to unpack .../10-curl_8.14.1-2+deb13u4_amd64.deb ...
+#8 4.648 Unpacking curl (8.14.1-2+deb13u4) over (8.14.1-2+deb13u2) ...
+#8 4.676 Preparing to unpack .../11-libcurl4t64_8.14.1-2+deb13u4_amd64.deb ...
+#8 4.679 Unpacking libcurl4t64:amd64 (8.14.1-2+deb13u4) over (8.14.1-2+deb13u2) ...
+#8 4.704 Selecting previously unselected package libconfig-inifiles-perl.
+#8 4.705 Preparing to unpack .../12-libconfig-inifiles-perl_3.000003-3+deb13u1_all.deb ...
+#8 4.706 Unpacking libconfig-inifiles-perl (3.000003-3+deb13u1) ...
+#8 4.718 Selecting previously unselected package mysql-common.
+#8 4.720 Preparing to unpack .../13-mysql-common_5.8+1.1.1_all.deb ...
+#8 4.728 Unpacking mysql-common (5.8+1.1.1) ...
+#8 4.740 Selecting previously unselected package mariadb-common.
+#8 4.743 Preparing to unpack .../14-mariadb-common_1%3a11.8.6-0+deb13u1_all.deb ...
+#8 4.746 Unpacking mariadb-common (1:11.8.6-0+deb13u1) ...
+#8 4.760 Selecting previously unselected package libmariadb3:amd64.
+#8 4.761 Preparing to unpack .../15-libmariadb3_1%3a11.8.6-0+deb13u1_amd64.deb ...
+#8 4.763 Unpacking libmariadb3:amd64 (1:11.8.6-0+deb13u1) ...
+#8 4.781 Selecting previously unselected package libncurses6:amd64.
+#8 4.782 Preparing to unpack .../16-libncurses6_6.5+20250216-2_amd64.deb ...
+#8 4.784 Unpacking libncurses6:amd64 (6.5+20250216-2) ...
+#8 4.798 Selecting previously unselected package mariadb-client-core.
+#8 4.799 Preparing to unpack .../17-mariadb-client-core_1%3a11.8.6-0+deb13u1_amd64.deb ...
+#8 4.800 Unpacking mariadb-client-core (1:11.8.6-0+deb13u1) ...
+#8 4.864 Selecting previously unselected package libpcre2-posix3:amd64.
+#8 4.866 Preparing to unpack .../18-libpcre2-posix3_10.46-1~deb13u1_amd64.deb ...
+#8 4.868 Unpacking libpcre2-posix3:amd64 (10.46-1~deb13u1) ...
+#8 4.882 Selecting previously unselected package mariadb-client.
+#8 4.884 Preparing to unpack .../19-mariadb-client_1%3a11.8.6-0+deb13u1_amd64.deb ...
+#8 4.885 Unpacking mariadb-client (1:11.8.6-0+deb13u1) ...
+#8 5.057 Selecting previously unselected package mariadb-client-compat.
+#8 5.058 Preparing to unpack .../20-mariadb-client-compat_1%3a11.8.6-0+deb13u1_all.deb ...
+#8 5.059 Unpacking mariadb-client-compat (1:11.8.6-0+deb13u1) ...
+#8 5.073 Selecting previously unselected package default-mysql-client.
+#8 5.074 Preparing to unpack .../21-default-mysql-client_1.1.1_all.deb ...
+#8 5.076 Unpacking default-mysql-client (1.1.1) ...
+#8 5.088 Selecting previously unselected package fontconfig.
+#8 5.090 Preparing to unpack .../22-fontconfig_2.15.0-2.3_amd64.deb ...
+#8 5.091 Unpacking fontconfig (2.15.0-2.3) ...
+#8 5.109 Selecting previously unselected package libngtcp2-16:amd64.
+#8 5.110 Preparing to unpack .../23-libngtcp2-16_1.11.0-1+deb13u1_amd64.deb ...
+#8 5.111 Unpacking libngtcp2-16:amd64 (1.11.0-1+deb13u1) ...
+#8 5.130 Selecting previously unselected package libngtcp2-crypto-gnutls8:amd64.
+#8 5.132 Preparing to unpack .../24-libngtcp2-crypto-gnutls8_1.11.0-1+deb13u1_amd64.deb ...
+#8 5.133 Unpacking libngtcp2-crypto-gnutls8:amd64 (1.11.0-1+deb13u1) ...
+#8 5.147 Selecting previously unselected package libcurl3t64-gnutls:amd64.
+#8 5.148 Preparing to unpack .../25-libcurl3t64-gnutls_8.14.1-2+deb13u4_amd64.deb ...
+#8 5.149 Unpacking libcurl3t64-gnutls:amd64 (8.14.1-2+deb13u4) ...
+#8 5.171 Selecting previously unselected package liberror-perl.
+#8 5.173 Preparing to unpack .../26-liberror-perl_0.17030-1_all.deb ...
+#8 5.174 Unpacking liberror-perl (0.17030-1) ...
+#8 5.185 Selecting previously unselected package git-man.
+#8 5.186 Preparing to unpack .../27-git-man_1%3a2.47.3-0+deb13u1_all.deb ...
+#8 5.188 Unpacking git-man (1:2.47.3-0+deb13u1) ...
+#8 5.228 Selecting previously unselected package git.
+#8 5.229 Preparing to unpack .../28-git_1%3a2.47.3-0+deb13u1_amd64.deb ...
+#8 5.233 Unpacking git (1:2.47.3-0+deb13u1) ...
+#8 5.416 Selecting previously unselected package hicolor-icon-theme.
+#8 5.419 Preparing to unpack .../29-hicolor-icon-theme_0.18-2_all.deb ...
+#8 5.420 Unpacking hicolor-icon-theme (0.18-2) ...
+#8 5.470 Selecting previously unselected package imagemagick-7.q16.
+#8 5.472 Preparing to unpack .../30-imagemagick-7.q16_8%3a7.1.1.43+dfsg1-1+deb13u11_amd64.deb ...
+#8 5.473 Unpacking imagemagick-7.q16 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 5.498 Selecting previously unselected package imagemagick.
+#8 5.500 Preparing to unpack .../31-imagemagick_8%3a7.1.1.43+dfsg1-1+deb13u11_amd64.deb ...
+#8 5.501 Unpacking imagemagick (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 5.518 Selecting previously unselected package libpixman-1-0:amd64.
+#8 5.519 Preparing to unpack .../32-libpixman-1-0_0.44.0-3_amd64.deb ...
+#8 5.520 Unpacking libpixman-1-0:amd64 (0.44.0-3) ...
+#8 5.543 Selecting previously unselected package libxcb-render0:amd64.
+#8 5.545 Preparing to unpack .../33-libxcb-render0_1.17.0-2+b1_amd64.deb ...
+#8 5.546 Unpacking libxcb-render0:amd64 (1.17.0-2+b1) ...
+#8 5.562 Selecting previously unselected package libxcb-shm0:amd64.
+#8 5.564 Preparing to unpack .../34-libxcb-shm0_1.17.0-2+b1_amd64.deb ...
+#8 5.566 Unpacking libxcb-shm0:amd64 (1.17.0-2+b1) ...
+#8 5.580 Selecting previously unselected package libxrender1:amd64.
+#8 5.581 Preparing to unpack .../35-libxrender1_1%3a0.9.12-1_amd64.deb ...
+#8 5.583 Unpacking libxrender1:amd64 (1:0.9.12-1) ...
+#8 5.596 Selecting previously unselected package libcairo2:amd64.
+#8 5.598 Preparing to unpack .../36-libcairo2_1.18.4-1+b1_amd64.deb ...
+#8 5.599 Unpacking libcairo2:amd64 (1.18.4-1+b1) ...
+#8 5.628 Selecting previously unselected package libdatrie1:amd64.
+#8 5.629 Preparing to unpack .../37-libdatrie1_0.2.13-3+b1_amd64.deb ...
+#8 5.631 Unpacking libdatrie1:amd64 (0.2.13-3+b1) ...
+#8 5.644 Selecting previously unselected package libdbi-perl:amd64.
+#8 5.646 Preparing to unpack .../38-libdbi-perl_1.647-1+deb13u1_amd64.deb ...
+#8 5.647 Unpacking libdbi-perl:amd64 (1.647-1+deb13u1) ...
+#8 5.680 Selecting previously unselected package libdbd-mariadb-perl.
+#8 5.682 Preparing to unpack .../39-libdbd-mariadb-perl_1.22-1+b4_amd64.deb ...
+#8 5.683 Unpacking libdbd-mariadb-perl (1.22-1+b4) ...
+#8 5.698 Selecting previously unselected package libdjvulibre-text.
+#8 5.700 Preparing to unpack .../40-libdjvulibre-text_3.5.28-2.2_all.deb ...
+#8 5.700 Unpacking libdjvulibre-text (3.5.28-2.2) ...
+#8 5.715 Selecting previously unselected package libdjvulibre21:amd64.
+#8 5.717 Preparing to unpack .../41-libdjvulibre21_3.5.28-2.2_amd64.deb ...
+#8 5.718 Unpacking libdjvulibre21:amd64 (3.5.28-2.2) ...
+#8 5.756 Selecting previously unselected package libfribidi0:amd64.
+#8 5.758 Preparing to unpack .../42-libfribidi0_1.0.16-1_amd64.deb ...
+#8 5.759 Unpacking libfribidi0:amd64 (1.0.16-1) ...
+#8 5.772 Selecting previously unselected package libgpm2:amd64.
+#8 5.774 Preparing to unpack .../43-libgpm2_1.20.7-11+b2_amd64.deb ...
+#8 5.775 Unpacking libgpm2:amd64 (1.20.7-11+b2) ...
+#8 5.787 Selecting previously unselected package libgraphite2-3:amd64.
+#8 5.789 Preparing to unpack .../44-libgraphite2-3_1.3.14-2+deb13u1_amd64.deb ...
+#8 5.790 Unpacking libgraphite2-3:amd64 (1.3.14-2+deb13u1) ...
+#8 5.805 Selecting previously unselected package libharfbuzz0b:amd64.
+#8 5.807 Preparing to unpack .../45-libharfbuzz0b_10.2.0-1+deb13u1_amd64.deb ...
+#8 5.808 Unpacking libharfbuzz0b:amd64 (10.2.0-1+deb13u1) ...
+#8 5.837 Selecting previously unselected package libimath-3-1-29t64:amd64.
+#8 5.839 Preparing to unpack .../46-libimath-3-1-29t64_3.1.12-1+b3_amd64.deb ...
+#8 5.840 Unpacking libimath-3-1-29t64:amd64 (3.1.12-1+b3) ...
+#8 5.856 Selecting previously unselected package libjxr0t64:amd64.
+#8 5.859 Preparing to unpack .../47-libjxr0t64_1.2~git20170615.f752187-5.3_amd64.deb ...
+#8 5.860 Unpacking libjxr0t64:amd64 (1.2~git20170615.f752187-5.3) ...
+#8 5.876 Selecting previously unselected package libjxr-tools.
+#8 5.878 Preparing to unpack .../48-libjxr-tools_1.2~git20170615.f752187-5.3_amd64.deb ...
+#8 5.879 Unpacking libjxr-tools (1.2~git20170615.f752187-5.3) ...
+#8 5.892 Selecting previously unselected package libopenexr-3-1-30:amd64.
+#8 5.894 Preparing to unpack .../49-libopenexr-3-1-30_3.1.13-2_amd64.deb ...
+#8 5.895 Unpacking libopenexr-3-1-30:amd64 (3.1.13-2) ...
+#8 5.954 Selecting previously unselected package libthai-data.
+#8 5.956 Preparing to unpack .../50-libthai-data_0.1.29-2_all.deb ...
+#8 5.957 Unpacking libthai-data (0.1.29-2) ...
+#8 5.976 Selecting previously unselected package libthai0:amd64.
+#8 5.977 Preparing to unpack .../51-libthai0_0.1.29-2+b1_amd64.deb ...
+#8 5.979 Unpacking libthai0:amd64 (0.1.29-2+b1) ...
+#8 5.996 Selecting previously unselected package libpango-1.0-0:amd64.
+#8 5.997 Preparing to unpack .../52-libpango-1.0-0_1.56.3-1_amd64.deb ...
+#8 5.998 Unpacking libpango-1.0-0:amd64 (1.56.3-1) ...
+#8 6.023 Selecting previously unselected package libpangoft2-1.0-0:amd64.
+#8 6.025 Preparing to unpack .../53-libpangoft2-1.0-0_1.56.3-1_amd64.deb ...
+#8 6.026 Unpacking libpangoft2-1.0-0:amd64 (1.56.3-1) ...
+#8 6.045 Selecting previously unselected package libpangocairo-1.0-0:amd64.
+#8 6.047 Preparing to unpack .../54-libpangocairo-1.0-0_1.56.3-1_amd64.deb ...
+#8 6.049 Unpacking libpangocairo-1.0-0:amd64 (1.56.3-1) ...
+#8 6.067 Selecting previously unselected package libwmflite-0.2-7:amd64.
+#8 6.069 Preparing to unpack .../55-libwmflite-0.2-7_0.2.13-1.1+b3_amd64.deb ...
+#8 6.070 Unpacking libwmflite-0.2-7:amd64 (0.2.13-1.1+b3) ...
+#8 6.086 Selecting previously unselected package libmagickcore-7.q16-10-extra:amd64.
+#8 6.088 Preparing to unpack .../56-libmagickcore-7.q16-10-extra_8%3a7.1.1.43+dfsg1-1+deb13u11_amd64.deb ...
+#8 6.089 Unpacking libmagickcore-7.q16-10-extra:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 6.111 Selecting previously unselected package libnetpbm11t64:amd64.
+#8 6.113 Preparing to unpack .../57-libnetpbm11t64_2%3a11.10.02-1_amd64.deb ...
+#8 6.114 Unpacking libnetpbm11t64:amd64 (2:11.10.02-1) ...
+#8 6.135 Selecting previously unselected package libterm-readkey-perl.
+#8 6.138 Preparing to unpack .../58-libterm-readkey-perl_2.38-2+b4_amd64.deb ...
+#8 6.139 Unpacking libterm-readkey-perl (2.38-2+b4) ...
+#8 6.154 Selecting previously unselected package libxmuu1:amd64.
+#8 6.157 Preparing to unpack .../59-libxmuu1_2%3a1.1.3-3+b4_amd64.deb ...
+#8 6.158 Unpacking libxmuu1:amd64 (2:1.1.3-3+b4) ...
+#8 6.174 Selecting previously unselected package netpbm.
+#8 6.176 Preparing to unpack .../60-netpbm_2%3a11.10.02-1_amd64.deb ...
+#8 6.177 Unpacking netpbm (2:11.10.02-1) ...
+#8 6.257 Selecting previously unselected package unzip.
+#8 6.259 Preparing to unpack .../61-unzip_6.0-29_amd64.deb ...
+#8 6.261 Unpacking unzip (6.0-29) ...
+#8 6.286 Selecting previously unselected package vim-runtime.
+#8 6.287 Preparing to unpack .../62-vim-runtime_2%3a9.1.1230-2_all.deb ...
+#8 6.295 Adding 'diversion of /usr/share/vim/vim91/doc/help.txt to /usr/share/vim/vim91/doc/help.txt.vim-tiny by vim-runtime'
+#8 6.302 Adding 'diversion of /usr/share/vim/vim91/doc/tags to /usr/share/vim/vim91/doc/tags.vim-tiny by vim-runtime'
+#8 6.304 Unpacking vim-runtime (2:9.1.1230-2) ...
+#8 6.545 Selecting previously unselected package vim.
+#8 6.548 Preparing to unpack .../63-vim_2%3a9.1.1230-2_amd64.deb ...
+#8 6.550 Unpacking vim (2:9.1.1230-2) ...
+#8 6.616 Selecting previously unselected package xauth.
+#8 6.617 Preparing to unpack .../64-xauth_1%3a1.1.2-1.1_amd64.deb ...
+#8 6.619 Unpacking xauth (1:1.1.2-1.1) ...
+#8 6.632 Selecting previously unselected package xxd.
+#8 6.634 Preparing to unpack .../65-xxd_2%3a9.1.1230-2_amd64.deb ...
+#8 6.635 Unpacking xxd (2:9.1.1230-2) ...
+#8 6.649 Selecting previously unselected package zip.
+#8 6.651 Preparing to unpack .../66-zip_3.0-15_amd64.deb ...
+#8 6.652 Unpacking zip (3.0-15) ...
+#8 6.680 Setting up libconfig-inifiles-perl (3.000003-3+deb13u1) ...
+#8 6.684 Setting up libgraphite2-3:amd64 (1.3.14-2+deb13u1) ...
+#8 6.686 Setting up libpixman-1-0:amd64 (0.44.0-3) ...
+#8 6.690 Setting up mysql-common (5.8+1.1.1) ...
+#8 6.704 update-alternatives: using /etc/mysql/my.cnf.fallback to provide /etc/mysql/my.cnf (my.cnf) in auto mode
+#8 6.707 Setting up fontconfig (2.15.0-2.3) ...
+#8 6.711 Regenerating fonts cache... done.
+#8 8.913 Setting up libgpm2:amd64 (1.20.7-11+b2) ...
+#8 8.917 Setting up wget (1.25.0-2) ...
+#8 8.922 Setting up hicolor-icon-theme (0.18-2) ...
+#8 8.928 Setting up libwmflite-0.2-7:amd64 (0.2.13-1.1+b3) ...
+#8 8.932 Setting up libxrender1:amd64 (1:0.9.12-1) ...
+#8 8.936 Setting up libdatrie1:amd64 (0.2.13-3+b1) ...
+#8 8.939 Setting up libcurl4t64:amd64 (8.14.1-2+deb13u4) ...
+#8 8.942 Setting up libxcb-render0:amd64 (1.17.0-2+b1) ...
+#8 8.945 Setting up libcbor0.10:amd64 (0.10.2-2) ...
+#8 8.947 Setting up imagemagick-7-common (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 8.954 Installing new version of config file /etc/ImageMagick-7/policy.xml ...
+#8 8.967 Setting up unzip (6.0-29) ...
+#8 8.970 Setting up libedit2:amd64 (3.1-20250104-1) ...
+#8 8.972 Setting up less (668-1) ...
+#8 8.978 Setting up libxcb-shm0:amd64 (1.17.0-2+b1) ...
+#8 8.980 Setting up libcairo2:amd64 (1.18.4-1+b1) ...
+#8 8.983 Setting up libnetpbm11t64:amd64 (2:11.10.02-1) ...
+#8 8.986 Setting up xxd (2:9.1.1230-2) ...
+#8 8.988 Setting up liberror-perl (0.17030-1) ...
+#8 8.991 Setting up mariadb-common (1:11.8.6-0+deb13u1) ...
+#8 8.995 update-alternatives: using /etc/mysql/mariadb.cnf to provide /etc/mysql/my.cnf (my.cnf) in auto mode
+#8 8.998 Setting up zip (3.0-15) ...
+#8 9.000 Setting up vim-common (2:9.1.1230-2) ...
+#8 9.005 Setting up libjxr0t64:amd64 (1.2~git20170615.f752187-5.3) ...
+#8 9.008 Setting up libncurses6:amd64 (6.5+20250216-2) ...
+#8 9.012 Setting up libfribidi0:amd64 (1.0.16-1) ...
+#8 9.014 Setting up libimath-3-1-29t64:amd64 (3.1.12-1+b3) ...
+#8 9.017 Setting up libmariadb3:amd64 (1:11.8.6-0+deb13u1) ...
+#8 9.021 Setting up netpbm (2:11.10.02-1) ...
+#8 9.023 Setting up libmagickcore-7.q16-10:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 9.026 Setting up libpcre2-posix3:amd64 (10.46-1~deb13u1) ...
+#8 9.029 Setting up git-man (1:2.47.3-0+deb13u1) ...
+#8 9.033 Setting up libharfbuzz0b:amd64 (10.2.0-1+deb13u1) ...
+#8 9.037 Setting up libthai-data (0.1.29-2) ...
+#8 9.041 Setting up libngtcp2-16:amd64 (1.11.0-1+deb13u1) ...
+#8 9.045 Setting up curl (8.14.1-2+deb13u4) ...
+#8 9.049 Setting up libdjvulibre-text (3.5.28-2.2) ...
+#8 9.053 Setting up libterm-readkey-perl (2.38-2+b4) ...
+#8 9.056 Setting up vim-runtime (2:9.1.1230-2) ...
+#8 9.069 Setting up libfido2-1:amd64 (1.15.0-1+b1) ...
+#8 9.072 Setting up libxmuu1:amd64 (2:1.1.3-3+b4) ...
+#8 9.075 Setting up libdbi-perl:amd64 (1.647-1+deb13u1) ...
+#8 9.077 Setting up libngtcp2-crypto-gnutls8:amd64 (1.11.0-1+deb13u1) ...
+#8 9.080 Setting up vim (2:9.1.1230-2) ...
+#8 9.083 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/da/man1/editor.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/de/man1/editor.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/fr/man1/editor.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/it/man1/editor.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/ja/man1/editor.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/pl/man1/editor.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/ru/man1/editor.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.083 update-alternatives: warning: skip creation of /usr/share/man/tr/man1/editor.1.gz because associated file /usr/share/man/tr/man1/vim.1.gz (of link group editor) doesn't exist
+#8 9.085 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/man1/ex.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/da/man1/ex.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/de/man1/ex.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/fr/man1/ex.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/it/man1/ex.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/ja/man1/ex.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/pl/man1/ex.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/ru/man1/ex.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.085 update-alternatives: warning: skip creation of /usr/share/man/tr/man1/ex.1.gz because associated file /usr/share/man/tr/man1/vim.1.gz (of link group ex) doesn't exist
+#8 9.087 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+#8 9.088 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+#8 9.090 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/man1/vi.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/da/man1/vi.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/de/man1/vi.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/fr/man1/vi.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/it/man1/vi.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/ja/man1/vi.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/pl/man1/vi.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/ru/man1/vi.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.090 update-alternatives: warning: skip creation of /usr/share/man/tr/man1/vi.1.gz because associated file /usr/share/man/tr/man1/vim.1.gz (of link group vi) doesn't exist
+#8 9.091 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/man1/view.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/da/man1/view.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/de/man1/view.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/fr/man1/view.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/it/man1/view.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/ja/man1/view.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/pl/man1/view.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/ru/man1/view.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.091 update-alternatives: warning: skip creation of /usr/share/man/tr/man1/view.1.gz because associated file /usr/share/man/tr/man1/vim.1.gz (of link group view) doesn't exist
+#8 9.093 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+#8 9.095 update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+#8 9.097 Setting up libmagickwand-7.q16-10:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 9.100 Setting up libjxr-tools (1.2~git20170615.f752187-5.3) ...
+#8 9.104 Setting up openssh-client (1:10.0p1-7+deb13u4) ...
+#8 9.225 Setting up libdjvulibre21:amd64 (3.5.28-2.2) ...
+#8 9.229 Setting up libcurl3t64-gnutls:amd64 (8.14.1-2+deb13u4) ...
+#8 9.233 Setting up mariadb-client-core (1:11.8.6-0+deb13u1) ...
+#8 9.236 Setting up libdbd-mariadb-perl (1.22-1+b4) ...
+#8 9.239 Setting up libthai0:amd64 (0.1.29-2+b1) ...
+#8 9.242 Setting up libopenexr-3-1-30:amd64 (3.1.13-2) ...
+#8 9.244 Setting up git (1:2.47.3-0+deb13u1) ...
+#8 9.252 Setting up xauth (1:1.1.2-1.1) ...
+#8 9.256 Setting up imagemagick-7.q16 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 9.260 update-alternatives: using /usr/bin/compare-im7.q16 to provide /usr/bin/compare (compare) in auto mode
+#8 9.260 update-alternatives: warning: skip creation of /usr/share/man/man1/compare.1.gz because associated file /usr/share/man/man1/compare-im7.q16.1.gz (of link group compare) doesn't exist
+#8 9.262 update-alternatives: using /usr/bin/compare-im7.q16 to provide /usr/bin/compare-im7 (compare-im7) in auto mode
+#8 9.262 update-alternatives: warning: skip creation of /usr/share/man/man1/compare-im7.1.gz because associated file /usr/share/man/man1/compare-im7.q16.1.gz (of link group compare-im7) doesn't exist
+#8 9.264 update-alternatives: using /usr/bin/animate-im7.q16 to provide /usr/bin/animate (animate) in auto mode
+#8 9.264 update-alternatives: warning: skip creation of /usr/share/man/man1/animate.1.gz because associated file /usr/share/man/man1/animate-im7.q16.1.gz (of link group animate) doesn't exist
+#8 9.266 update-alternatives: using /usr/bin/animate-im7.q16 to provide /usr/bin/animate-im7 (animate-im7) in auto mode
+#8 9.266 update-alternatives: warning: skip creation of /usr/share/man/man1/animate-im7.1.gz because associated file /usr/share/man/man1/animate-im7.q16.1.gz (of link group animate-im7) doesn't exist
+#8 9.268 update-alternatives: using /usr/bin/convert-im7.q16 to provide /usr/bin/convert (convert) in auto mode
+#8 9.268 update-alternatives: warning: skip creation of /usr/share/man/man1/convert.1.gz because associated file /usr/share/man/man1/convert-im7.q16.1.gz (of link group convert) doesn't exist
+#8 9.270 update-alternatives: using /usr/bin/convert-im7.q16 to provide /usr/bin/convert-im7 (convert-im7) in auto mode
+#8 9.270 update-alternatives: warning: skip creation of /usr/share/man/man1/convert-im7.1.gz because associated file /usr/share/man/man1/convert-im7.q16.1.gz (of link group convert-im7) doesn't exist
+#8 9.272 update-alternatives: using /usr/bin/composite-im7.q16 to provide /usr/bin/composite (composite) in auto mode
+#8 9.272 update-alternatives: warning: skip creation of /usr/share/man/man1/composite.1.gz because associated file /usr/share/man/man1/composite-im7.q16.1.gz (of link group composite) doesn't exist
+#8 9.274 update-alternatives: using /usr/bin/composite-im7.q16 to provide /usr/bin/composite-im7 (composite-im7) in auto mode
+#8 9.274 update-alternatives: warning: skip creation of /usr/share/man/man1/composite-im7.1.gz because associated file /usr/share/man/man1/composite-im7.q16.1.gz (of link group composite-im7) doesn't exist
+#8 9.276 update-alternatives: using /usr/bin/conjure-im7.q16 to provide /usr/bin/conjure (conjure) in auto mode
+#8 9.276 update-alternatives: warning: skip creation of /usr/share/man/man1/conjure.1.gz because associated file /usr/share/man/man1/conjure-im7.q16.1.gz (of link group conjure) doesn't exist
+#8 9.278 update-alternatives: using /usr/bin/conjure-im7.q16 to provide /usr/bin/conjure-im7 (conjure-im7) in auto mode
+#8 9.278 update-alternatives: warning: skip creation of /usr/share/man/man1/conjure-im7.1.gz because associated file /usr/share/man/man1/conjure-im7.q16.1.gz (of link group conjure-im7) doesn't exist
+#8 9.280 update-alternatives: using /usr/bin/import-im7.q16 to provide /usr/bin/import (import) in auto mode
+#8 9.280 update-alternatives: warning: skip creation of /usr/share/man/man1/import.1.gz because associated file /usr/share/man/man1/import-im7.q16.1.gz (of link group import) doesn't exist
+#8 9.281 update-alternatives: using /usr/bin/import-im7.q16 to provide /usr/bin/import-im7 (import-im7) in auto mode
+#8 9.281 update-alternatives: warning: skip creation of /usr/share/man/man1/import-im7.1.gz because associated file /usr/share/man/man1/import-im7.q16.1.gz (of link group import-im7) doesn't exist
+#8 9.284 update-alternatives: using /usr/bin/identify-im7.q16 to provide /usr/bin/identify (identify) in auto mode
+#8 9.284 update-alternatives: warning: skip creation of /usr/share/man/man1/identify.1.gz because associated file /usr/share/man/man1/identify-im7.q16.1.gz (of link group identify) doesn't exist
+#8 9.286 update-alternatives: using /usr/bin/identify-im7.q16 to provide /usr/bin/identify-im7 (identify-im7) in auto mode
+#8 9.286 update-alternatives: warning: skip creation of /usr/share/man/man1/identify-im7.1.gz because associated file /usr/share/man/man1/identify-im7.q16.1.gz (of link group identify-im7) doesn't exist
+#8 9.288 update-alternatives: using /usr/bin/stream-im7.q16 to provide /usr/bin/stream (stream) in auto mode
+#8 9.288 update-alternatives: warning: skip creation of /usr/share/man/man1/stream.1.gz because associated file /usr/share/man/man1/stream-im7.q16.1.gz (of link group stream) doesn't exist
+#8 9.290 update-alternatives: using /usr/bin/stream-im7.q16 to provide /usr/bin/stream-im7 (stream-im7) in auto mode
+#8 9.290 update-alternatives: warning: skip creation of /usr/share/man/man1/stream-im7.1.gz because associated file /usr/share/man/man1/stream-im7.q16.1.gz (of link group stream-im7) doesn't exist
+#8 9.292 update-alternatives: using /usr/bin/display-im7.q16 to provide /usr/bin/display (display) in auto mode
+#8 9.292 update-alternatives: warning: skip creation of /usr/share/man/man1/display.1.gz because associated file /usr/share/man/man1/display-im7.q16.1.gz (of link group display) doesn't exist
+#8 9.294 update-alternatives: using /usr/bin/display-im7.q16 to provide /usr/bin/display-im7 (display-im7) in auto mode
+#8 9.294 update-alternatives: warning: skip creation of /usr/share/man/man1/display-im7.1.gz because associated file /usr/share/man/man1/display-im7.q16.1.gz (of link group display-im7) doesn't exist
+#8 9.296 update-alternatives: using /usr/bin/montage-im7.q16 to provide /usr/bin/montage (montage) in auto mode
+#8 9.296 update-alternatives: warning: skip creation of /usr/share/man/man1/montage.1.gz because associated file /usr/share/man/man1/montage-im7.q16.1.gz (of link group montage) doesn't exist
+#8 9.298 update-alternatives: using /usr/bin/montage-im7.q16 to provide /usr/bin/montage-im7 (montage-im7) in auto mode
+#8 9.298 update-alternatives: warning: skip creation of /usr/share/man/man1/montage-im7.1.gz because associated file /usr/share/man/man1/montage-im7.q16.1.gz (of link group montage-im7) doesn't exist
+#8 9.300 update-alternatives: using /usr/bin/mogrify-im7.q16 to provide /usr/bin/mogrify (mogrify) in auto mode
+#8 9.300 update-alternatives: warning: skip creation of /usr/share/man/man1/mogrify.1.gz because associated file /usr/share/man/man1/mogrify-im7.q16.1.gz (of link group mogrify) doesn't exist
+#8 9.301 update-alternatives: using /usr/bin/mogrify-im7.q16 to provide /usr/bin/mogrify-im7 (mogrify-im7) in auto mode
+#8 9.301 update-alternatives: warning: skip creation of /usr/share/man/man1/mogrify-im7.1.gz because associated file /usr/share/man/man1/mogrify-im7.q16.1.gz (of link group mogrify-im7) doesn't exist
+#8 9.304 update-alternatives: using /usr/bin/magick-im7.q16 to provide /usr/bin/magick (magick) in auto mode
+#8 9.304 update-alternatives: warning: skip creation of /usr/share/man/man1/magick.1.gz because associated file /usr/share/man/man1/magick-im7.q16.1.gz (of link group magick) doesn't exist
+#8 9.306 update-alternatives: using /usr/bin/magick-im7.q16 to provide /usr/bin/magick-im7 (magick-im7) in auto mode
+#8 9.306 update-alternatives: warning: skip creation of /usr/share/man/man1/magick-im7.1.gz because associated file /usr/share/man/man1/magick-im7.q16.1.gz (of link group magick-im7) doesn't exist
+#8 9.308 update-alternatives: using /usr/bin/magick-script-im7.q16 to provide /usr/bin/magick-script (magick-script) in auto mode
+#8 9.308 update-alternatives: warning: skip creation of /usr/share/man/man1/magick-script.1.gz because associated file /usr/share/man/man1/magick-script-im7.q16.1.gz (of link group magick-script) doesn't exist
+#8 9.311 update-alternatives: using /usr/bin/magick-script-im7.q16 to provide /usr/bin/magick-script-im7 (magick-script-im7) in auto mode
+#8 9.311 update-alternatives: warning: skip creation of /usr/share/man/man1/magick-script-im7.1.gz because associated file /usr/share/man/man1/magick-script-im7.q16.1.gz (of link group magick-script-im7) doesn't exist
+#8 9.314 Setting up mariadb-client (1:11.8.6-0+deb13u1) ...
+#8 9.322 Setting up mariadb-client-compat (1:11.8.6-0+deb13u1) ...
+#8 9.326 Setting up libpango-1.0-0:amd64 (1.56.3-1) ...
+#8 9.331 Setting up imagemagick (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 9.334 Setting up libpangoft2-1.0-0:amd64 (1.56.3-1) ...
+#8 9.337 Setting up libpangocairo-1.0-0:amd64 (1.56.3-1) ...
+#8 9.339 Setting up default-mysql-client (1.1.1) ...
+#8 9.342 Setting up libmagickcore-7.q16-10-extra:amd64 (8:7.1.1.43+dfsg1-1+deb13u11) ...
+#8 9.345 Processing triggers for libc-bin (2.41-12) ...
+#8 DONE 9.5s
+
+#9 [stage-0 4/6] RUN install-php-extensions     gd     mysqli     pdo_mysql     zip     intl     exif     opcache     redis     imagick
+#9 0.151 install-php-extensions v.2.11.12
+#9 0.151 #StandWithUkraine
+#9 0.265 ### WARNING Module already installed: gd ###
+#9 0.267 ### WARNING Module already installed: mysqli ###
+#9 0.271 ### WARNING Module already installed: zip ###
+#9 0.273 ### WARNING Module already installed: intl ###
+#9 0.275 ### WARNING Module already installed: exif ###
+#9 0.277 ### WARNING Module already installed: opcache ###
+#9 0.281 ### WARNING Module already installed: imagick ###
+#9 1.235 Updating channel "pecl.php.net"
+#9 1.247 XML Error: 'Not well-formed (invalid token)' on line '1'
+#9 1.288 Get:1 http://deb.debian.org/debian trixie InRelease [140 kB]
+#9 1.299 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#9 1.299 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#9 1.311 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9673 kB]
+#9 1.401 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [4412 B]
+#9 1.401 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [236 kB]
+#9 1.934 Fetched 10.1 MB in 1s (15.6 MB/s)
+#9 1.934 Reading package lists...
+#9 4.407 ### MARKING PRE-INSTALLED PACKAGES AS IN-USE ###
+#9 5.026 libzstd1 was already set to manually installed.
+#9 5.026 liblz4-1 set to manually installed.
+#9 5.027 ### INSTALLING REQUIRED PACKAGES ###
+#9 5.027 # Packages to be kept after installation: 
+#9 5.027 # Packages to be used only for installation: liblz4-dev libxxhash-dev libzstd-dev
+#9 6.465 Selecting previously unselected package libxxhash-dev:amd64.
+#9 6.465 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23171 files and directories currently installed.)
+#9 6.477 Preparing to unpack .../libxxhash-dev_0.8.3-2_amd64.deb ...
+#9 6.479 Unpacking libxxhash-dev:amd64 (0.8.3-2) ...
+#9 6.496 Selecting previously unselected package liblz4-dev:amd64.
+#9 6.497 Preparing to unpack .../liblz4-dev_1.10.0-4_amd64.deb ...
+#9 6.499 Unpacking liblz4-dev:amd64 (1.10.0-4) ...
+#9 6.512 Selecting previously unselected package libzstd-dev:amd64.
+#9 6.513 Preparing to unpack .../libzstd-dev_1.5.7+dfsg-1_amd64.deb ...
+#9 6.514 Unpacking libzstd-dev:amd64 (1.5.7+dfsg-1) ...
+#9 6.540 Setting up libzstd-dev:amd64 (1.5.7+dfsg-1) ...
+#9 6.542 Setting up libxxhash-dev:amd64 (0.8.3-2) ...
+#9 6.545 Setting up liblz4-dev:amd64 (1.10.0-4) ...
+#9 6.560 ### INSTALLING BUNDLED MODULE pdo_mysql ###
+#9 6.603 Configuring for:
+#9 6.603 PHP Api Version:         20230831
+#9 6.603 Zend Module Api No:      20230831
+#9 6.603 Zend Extension Api No:   420230831
+#9 7.048 checking for grep that handles long lines and -e... /usr/bin/grep
+#9 7.050 checking for egrep... /usr/bin/grep -E
+#9 7.052 checking for a sed that does not truncate output... /usr/bin/sed
+#9 7.079 checking for pkg-config... /usr/bin/pkg-config
+#9 7.079 checking pkg-config is at least version 0.9.0... yes
+#9 7.080 checking for cc... cc
+#9 7.102 checking whether the C compiler works... yes
+#9 7.129 checking for C compiler default output file name... a.out
+#9 7.130 checking for suffix of executables... 
+#9 7.155 checking whether we are cross compiling... no
+#9 7.184 checking for suffix of object files... o
+#9 7.197 checking whether the compiler supports GNU C... yes
+#9 7.210 checking whether cc accepts -g... yes
+#9 7.222 checking for cc option to enable C11 features... none needed
+#9 7.251 checking how to run the C preprocessor... cc -E
+#9 7.288 checking for egrep -e... (cached) /usr/bin/grep -E
+#9 7.289 checking for icc... no
+#9 7.295 checking for suncc... no
+#9 7.301 checking for system library directory... lib
+#9 7.301 checking if compiler supports -Wl,-rpath,... yes
+#9 7.330 checking build system type... x86_64-pc-linux-gnu
+#9 7.334 checking host system type... x86_64-pc-linux-gnu
+#9 7.334 checking target system type... x86_64-pc-linux-gnu
+#9 7.363 checking for PHP prefix... /usr/local
+#9 7.363 checking for PHP includes... -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib
+#9 7.363 checking for PHP extension directory... /usr/local/lib/php/extensions/no-debug-non-zts-20230831
+#9 7.363 checking for PHP installed headers prefix... /usr/local/include/php
+#9 7.363 checking if debug is enabled... no
+#9 7.373 checking if zts is enabled... no
+#9 7.385 checking for gawk... no
+#9 7.385 checking for nawk... nawk
+#9 7.386 checking if nawk is broken... no
+#9 7.387 checking for MySQL support for PDO... yes, shared
+#9 7.387 checking for the location of libz... no
+#9 7.387 checking for MySQL UNIX socket location... 
+#9 7.387 checking for PDO includes... /usr/local/include/php/ext
+#9 7.392 checking for a sed that does not truncate output... /usr/bin/sed
+#9 7.394 checking for ld used by cc... /usr/bin/ld
+#9 7.397 checking if the linker (/usr/bin/ld) is GNU ld... yes
+#9 7.399 checking for /usr/bin/ld option to reload object files... -r
+#9 7.399 checking for BSD-compatible nm... /usr/bin/nm -B
+#9 7.401 checking whether ln -s works... yes
+#9 7.401 checking how to recognize dependent libraries... pass_all
+#9 7.411 checking for stdio.h... yes
+#9 7.423 checking for stdlib.h... yes
+#9 7.438 checking for string.h... yes
+#9 7.455 checking for inttypes.h... yes
+#9 7.474 checking for stdint.h... yes
+#9 7.492 checking for strings.h... yes
+#9 7.509 checking for sys/stat.h... yes
+#9 7.528 checking for sys/types.h... yes
+#9 7.545 checking for unistd.h... yes
+#9 7.563 checking for dlfcn.h... yes
+#9 7.580 checking the maximum length of command line arguments... 1572864
+#9 7.584 checking command to parse /usr/bin/nm -B output from cc object... ok
+#9 7.626 checking for objdir... .libs
+#9 7.628 checking for ar... ar
+#9 7.629 checking for ranlib... ranlib
+#9 7.629 checking for strip... strip
+#9 7.664 checking if cc supports -fno-rtti -fno-exceptions... no
+#9 7.677 checking for cc option to produce PIC... -fPIC
+#9 7.677 checking if cc PIC flag -fPIC works... yes
+#9 7.693 checking if cc static flag -static works... yes
+#9 7.740 checking if cc supports -c -o file.o... yes
+#9 7.762 checking whether the cc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+#9 7.772 checking whether -lc should be explicitly linked in... no
+#9 7.789 checking dynamic linker characteristics... GNU/Linux ld.so
+#9 7.800 checking how to hardcode library paths into programs... immediate
+#9 7.800 checking whether stripping libraries is possible... yes
+#9 7.801 checking if libtool supports shared libraries... yes
+#9 7.801 checking whether to build shared libraries... yes
+#9 7.801 checking whether to build static libraries... no
+#9 7.900 
+#9 7.900 creating libtool
+#9 7.913 appending configuration tag "CXX" to libtool
+#9 7.973 configure: patching config.h.in
+#9 7.976 configure: creating ./config.status
+#9 8.022 config.status: creating config.h
+#9 8.051 /bin/bash /usr/src/php/ext/pdo_mysql/libtool --tag=CC --mode=compile cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE   -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/pdo_mysql.c -o pdo_mysql.lo  -MMD -MF pdo_mysql.dep -MT pdo_mysql.lo
+#9 8.051 /bin/bash /usr/src/php/ext/pdo_mysql/libtool --tag=CC --mode=compile cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE   -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/mysql_driver.c -o mysql_driver.lo  -MMD -MF mysql_driver.dep -MT mysql_driver.lo
+#9 8.052 /bin/bash /usr/src/php/ext/pdo_mysql/libtool --tag=CC --mode=compile cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE   -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/mysql_statement.c -o mysql_statement.lo  -MMD -MF mysql_statement.dep -MT mysql_statement.lo
+#9 8.129 mkdir .libs
+#9 8.131  cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/pdo_mysql.c -MMD -MF pdo_mysql.dep -MT pdo_mysql.lo  -fPIC -DPIC -o .libs/pdo_mysql.o
+#9 8.133  cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/mysql_driver.c -MMD -MF mysql_driver.dep -MT mysql_driver.lo  -fPIC -DPIC -o .libs/mysql_driver.o
+#9 8.134  cc -I. -I/usr/src/php/ext/pdo_mysql -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I/usr/local/include/php/ext -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -DZEND_COMPILE_DL_EXT=1 -c /usr/src/php/ext/pdo_mysql/mysql_statement.c -MMD -MF mysql_statement.dep -MT mysql_statement.lo  -fPIC -DPIC -o .libs/mysql_statement.o
+#9 8.406 /bin/bash /usr/src/php/ext/pdo_mysql/libtool --tag=CC --mode=link cc -shared -I/usr/src/php/ext/pdo_mysql/include -I/usr/src/php/ext/pdo_mysql/main -I/usr/src/php/ext/pdo_mysql -I/usr/local/include/php -I/usr/local/include/php/main -I/usr/local/include/php/TSRM -I/usr/local/include/php/Zend -I/usr/local/include/php/ext -I/usr/local/include/php/ext/date/lib  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHAVE_CONFIG_H  -fstack-protector-strong -fpic -fpie -O2 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE  -Wl,-O1 -pie  -o pdo_mysql.la -export-dynamic -avoid-version -prefer-pic -module -rpath /usr/src/php/ext/pdo_mysql/modules  pdo_mysql.lo mysql_driver.lo mysql_statement.lo 
+#9 8.481 cc -shared  .libs/pdo_mysql.o .libs/mysql_driver.o .libs/mysql_statement.o   -Wl,-O1 -Wl,-soname -Wl,pdo_mysql.so -o .libs/pdo_mysql.so
+#9 8.492 creating pdo_mysql.la
+#9 8.499 (cd .libs && rm -f pdo_mysql.la && ln -s ../pdo_mysql.la pdo_mysql.la)
+#9 8.501 /bin/bash /usr/src/php/ext/pdo_mysql/libtool --tag=CC --mode=install cp ./pdo_mysql.la /usr/src/php/ext/pdo_mysql/modules
+#9 8.524 cp ./.libs/pdo_mysql.so /usr/src/php/ext/pdo_mysql/modules/pdo_mysql.so
+#9 8.527 cp ./.libs/pdo_mysql.lai /usr/src/php/ext/pdo_mysql/modules/pdo_mysql.la
+#9 8.540 PATH="$PATH:/sbin" ldconfig -n /usr/src/php/ext/pdo_mysql/modules
+#9 8.542 ----------------------------------------------------------------------
+#9 8.542 Libraries have been installed in:
+#9 8.542    /usr/src/php/ext/pdo_mysql/modules
+#9 8.542 
+#9 8.542 If you ever happen to want to link against installed libraries
+#9 8.542 in a given directory, LIBDIR, you must either use libtool, and
+#9 8.542 specify the full pathname of the library, or use the `-LLIBDIR'
+#9 8.542 flag during linking and do at least one of the following:
+#9 8.542    - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+#9 8.542      during execution
+#9 8.542    - add LIBDIR to the `LD_RUN_PATH' environment variable
+#9 8.542      during linking
+#9 8.542    - use the `-Wl,--rpath -Wl,LIBDIR' linker flag
+#9 8.542    - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+#9 8.542 
+#9 8.542 See any operating system documentation about shared libraries for
+#9 8.542 more information, such as the ld(1) and ld.so(8) manual pages.
+#9 8.544 ----------------------------------------------------------------------
+#9 8.545 
+#9 8.545 Build complete.
+#9 8.546 Don't forget to run 'make test'.
+#9 8.547 
+#9 8.558 + strip --strip-all modules/pdo_mysql.so
+#9 8.578 Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20230831/
+#9 8.647 find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+#9 8.650 find . -name \*.lo -o -name \*.o -o -name \*.dep | xargs rm -f
+#9 8.652 find . -name \*.la -o -name \*.a | xargs rm -f
+#9 8.655 find . -name \*.so | xargs rm -f
+#9 8.658 find . -name .libs -a -type d|xargs rm -rf
+#9 8.661 rm -f libphp.la      modules/* libs/*
+#9 8.662 rm -f ext/opcache/jit/zend_jit_x86.c
+#9 8.663 rm -f ext/opcache/jit/zend_jit_arm64.c
+#9 8.665 rm -f ext/opcache/minilua
+#9 8.708 ### INSTALLING REMOTE MODULE redis ###
+#9 8.813 No releases available for package "pecl.php.net/redis"
+#9 8.813 install failed
+#9 ERROR: process "/bin/sh -c install-php-extensions     gd     mysqli     pdo_mysql     zip     intl     exif     opcache     redis     imagick" did not complete successfully: exit code: 1
+------
+ > [stage-0 4/6] RUN install-php-extensions     gd     mysqli     pdo_mysql     zip     intl     exif     opcache     redis     imagick:
+8.652 find . -name \*.la -o -name \*.a | xargs rm -f
+8.655 find . -name \*.so | xargs rm -f
+8.658 find . -name .libs -a -type d|xargs rm -rf
+8.661 rm -f libphp.la      modules/* libs/*
+8.662 rm -f ext/opcache/jit/zend_jit_x86.c
+8.663 rm -f ext/opcache/jit/zend_jit_arm64.c
+8.665 rm -f ext/opcache/minilua
+8.708 ### INSTALLING REMOTE MODULE redis ###
+8.813 No releases available for package "pecl.php.net/redis"
+8.813 install failed
+------
+dockerfile:19
+--------------------
+  18 |     
+  19 | >>> RUN install-php-extensions \
+  20 | >>>     gd \
+  21 | >>>     mysqli \
+  22 | >>>     pdo_mysql \
+  23 | >>>     zip \
+  24 | >>>     intl \
+  25 | >>>     exif \
+  26 | >>>     opcache \
+  27 | >>>     redis \
+  28 | >>>     imagick
+  29 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c install-php-extensions     gd     mysqli     pdo_mysql     zip     intl     exif     opcache     redis     imagick" did not complete successfully: exit code: 1
