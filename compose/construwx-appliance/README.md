@@ -68,32 +68,39 @@ DB_USER=construwx
 DB_PASSWORD=...
 DB_ROOT_PASSWORD=...
 TZ=America/Denver
+WP_DOMAIN=mydev.construwx.in
+WP_SCHEME=https
+WP_DB_PREFIX=cnet_
+CONSTRUWX_RUN_DOMAIN_CUTOVER=false
 ```
 
-`wp-config.php` inside the wordpress backup must use `DB_HOST` `127.0.0.1` (or `localhost`) for this appliance — not a remote Compose service name.
+See [`.env.example`](.env.example). `wp-config.php` in the wordpress backup must use `DB_HOST` `127.0.0.1` (or `localhost`) for this appliance.
 
 ---
 
 ## Architecture
 
 ```text
-construwx-appliance:0.1
-  ├── Nginx          → host :8099 → container :80
-  ├── PHP-FPM 8.3
-  ├── MariaDB 11     → datadir /data/mariadb
-  ├── Redis          → /data/redis (disposable)
-  ├── WP-CLI
-  └── Supervisor
+Browser → Cloudflare → Nginx Proxy Manager (:443)
+                           ↓ HTTP
+                    construwx-appliance:80
+                      ├── Nginx / PHP-FPM 8.3
+                      ├── MariaDB 11
+                      ├── Redis
+                      ├── WP-CLI
+                      └── Supervisor
 
 Volumes (external, fixed names):
   construwx_appliance_wordpress  → /data/wordpress
   construwx_appliance_mariadb    → /data/mariadb
   construwx_appliance_redis      → /data/redis
+
+Shared Docker network: construwx_edge
 ```
 
-On every start the entrypoint syncs WordPress **core** (`wp-admin`, `wp-includes`, root PHP) from the image into `/data/wordpress`. It does **not** overwrite `wp-content/`, `wp-config.php`, or `wp-salt.php`. That keeps core complete even if a backup tree was missing files such as `admin-ajax.php`.
+On every start the entrypoint syncs WordPress **core** from the image into `/data/wordpress` without overwriting `wp-content/`, `wp-config.php`, or `wp-salt.php`.
 
-Default host port is **8099**. Change `ports` in `docker-compose.yml` if needed.
+Host port **8099** maps to appliance HTTP for lab/debug. Production HTTPS is terminated by **Nginx Proxy Manager** (Let’s Encrypt) — no manual certificate PEM files on the appliance.
 
 ---
 
@@ -122,7 +129,17 @@ docker version
 docker compose version
 ```
 
-### 2. Get the compose project and image
+### 2. Firewall
+
+```bash
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+# Prefer SSH tunnel for NPM UI instead of opening 81 publicly
+sudo ufw enable
+```
+
+### 3. Get the compose project and image
 
 **Option A — clone and build**
 
@@ -135,12 +152,22 @@ docker compose build
 **Option B — load a saved image**
 
 ```bash
-# place compose files under /opt/infrastructure/compose/construwx-appliance
 gunzip -c /path/to/construwx-appliance-0.1.tar.gz | docker load
 # image name must be: construwx-appliance:0.1
 ```
 
-### 3. Create volumes
+### 4. Shared edge network + Nginx Proxy Manager
+
+```bash
+docker network create construwx_edge
+
+cd /opt/infrastructure/compose/nginx-proxy-manager
+docker compose up -d
+```
+
+NPM admin UI: `http://127.0.0.1:81` (or SSH tunnel). Default first login `admin@example.com` / `changeme` — change immediately. Details: [`../nginx-proxy-manager/README.md`](../nginx-proxy-manager/README.md).
+
+### 5. Create volumes and restore backups
 
 ```bash
 docker volume create construwx_appliance_wordpress
@@ -156,10 +183,6 @@ Default data dirs on Linux:
 /var/lib/docker/volumes/construwx_appliance_redis/_data
 ```
 
-### 4. Restore backups into volumes
-
-Set `BACKUP` to wherever you keep the archive set:
-
 ```bash
 BACKUP=/path/to/your/backup-root   # your responsibility — any durable location
 
@@ -168,70 +191,72 @@ docker run --rm \
   -v "$BACKUP":/backup:ro \
   alpine sh -c 'cd /data && tar xzf /backup/wordpress.tgz'
 
-# If you have a MariaDB datadir archive:
 docker run --rm \
   -v construwx_appliance_mariadb:/data \
   -v "$BACKUP":/backup:ro \
   alpine sh -c 'cd /data && tar xzf /backup/mariadb.tgz'
-
-# Optional Redis
-# docker run --rm \
-#   -v construwx_appliance_redis:/data \
-#   -v "$BACKUP":/backup:ro \
-#   alpine sh -c 'cd /data && tar xzf /backup/redis.tgz'
 ```
 
-If you restore **SQL instead of** `mariadb.tgz`, leave the MariaDB volume empty, copy the dump for the container to read, then import after first start (step 6).
+SQL-only alternative: leave MariaDB volume empty, copy `$BACKUP/construwx.sql.gz` to `import/construwx.sql.gz`, start appliance, then `docker exec construwx-appliance construwx-import-db`.
 
-```bash
-mkdir -p import
-cp "$BACKUP/construwx.sql.gz" import/construwx.sql.gz
-```
-
-### 5. Install `.env`
-
-```bash
-cp "$BACKUP/env.backup" .env
-chmod 600 .env
-```
-
-### 6. Start
+### 6. Configure `.env` and start appliance
 
 ```bash
 cd /opt/infrastructure/compose/construwx-appliance
+cp "$BACKUP/env.backup" .env
+chmod 600 .env
+# Set the public hostname Cloudflare will use:
+#   WP_DOMAIN=mydev.construwx.in
+#   WP_SCHEME=https
+#   WP_DB_PREFIX=cnet_
+#   CONSTRUWX_RUN_DOMAIN_CUTOVER=false
+
 docker compose up -d
 docker logs -f construwx-appliance
 ```
 
-You should see:
+You should see core sync + `Starting ConstruWX appliance...`.
 
-```text
-Ensuring WordPress core in /data/wordpress from /usr/src/wordpress...
-WordPress core OK (admin-ajax.php present).
-Starting ConstruWX appliance...
-```
+### 7. Domain cutover (detect old host from DB)
 
-**SQL-only restore** (empty MariaDB volume + `import/construwx.sql.gz`):
+`construwx-set-domain` reads the **current** `siteurl` / domain from the restored database (no hardcoded old hostname), then runs serialized-safe `wp search-replace` to `https://${WP_DOMAIN}` and updates multisite / `wp-config` constants.
 
 ```bash
-docker exec construwx-appliance construwx-import-db
+docker exec construwx-appliance construwx-set-domain
 ```
 
-### 7. Verify
+Or set `CONSTRUWX_RUN_DOMAIN_CUTOVER=true` in `.env` so it runs automatically after DB is ready on boot.
+
+### 8. Cloudflare DNS
+
+1. DNS → `A` record for `WP_DOMAIN` → VPS IPv4  
+2. Proxy: **DNS only (grey)** for the first Let’s Encrypt HTTP-01 attempt if orange-cloud fails; switch to **Proxied (orange)** after the cert is issued  
+3. SSL/TLS → **Full**, then **Full (strict)** once NPM has a valid LE certificate  
+4. Optional: Always Use HTTPS  
+
+### 9. NPM Proxy Host (TLS — finish setup)
+
+1. Open NPM → Hosts → Proxy Hosts → Add  
+2. Domain Names: exact `WP_DOMAIN`  
+3. Scheme `http` → Forward Hostname `construwx-appliance` → Port `80`  
+4. Enable Websockets (recommended)  
+5. SSL tab → Request a new Let’s Encrypt certificate → agree ToS → **Force SSL** → Save  
+
+No manual certificate files. NPM stores/renews LE certs in its volumes.
+
+If LE fails behind orange cloud: grey-cloud → re-request → orange again; or use NPM’s Cloudflare DNS challenge with an API token.
+
+### 10. Verify production
 
 ```bash
-curl -sI http://localhost:8099/
+curl -sI "https://${WP_DOMAIN}"
 docker exec -w /data/wordpress construwx-appliance \
-  wp --allow-root --url=http://localhost:8099/ core version
+  wp --allow-root --url="https://${WP_DOMAIN}/" option get siteurl
 ```
 
-Open `http://YOUR_VPS_IP:8099/` only if the restored site’s domain/`siteurl` match that host. If the backup was taken for `http://localhost:8099`, use an SSH tunnel from your laptop:
+Browser: `https://YOUR_DOMAIN/` and `/trikona-login/`.
 
-```bash
-ssh -L 8099:127.0.0.1:8099 USER@YOUR_VPS_IP
-```
-
-Then browse `http://localhost:8099/`. Update domain URLs with WP-CLI if you want a public hostname.
+Lab-only check without DNS: `curl -sI http://localhost:8099/` (SSH tunnel if remote).
 
 ---
 
@@ -245,8 +270,10 @@ docker compose down          # volumes are kept
 docker compose logs -f
 docker exec -it construwx-appliance bash
 
+docker exec construwx-appliance construwx-set-domain
+
 docker exec -w /data/wordpress construwx-appliance \
-  wp --allow-root --url=http://localhost:8099/ plugin list
+  wp --allow-root --url="https://${WP_DOMAIN}/" plugin list
 ```
 
 Login for this product is typically `/trikona-login/`.
@@ -291,6 +318,8 @@ docker exec construwx-appliance bash -lc \
   | gzip > "$OUT/construwx.sql.gz"
 ```
 
+Also back up NPM volumes if you want LE/proxy config portable (`npm_data`, `npm_letsencrypt` from the NPM compose project).
+
 Copy `$OUT` off the machine. Losing the VPS without an off-box copy loses the site.
 
 ---
@@ -310,12 +339,15 @@ docker compose up -d --force-recreate
 | Symptom | What to check |
 |---------|----------------|
 | Login AJAX 404 / `Primary script unknown` | Core sync on boot; confirm `wp-admin/admin-ajax.php` exists after recreate |
-| Redirects to wrong domain | Restored `siteurl` / `home` / multisite domain — fix with WP-CLI |
+| Redirects to wrong domain | Run `construwx-set-domain`; confirm `WP_DOMAIN` |
+| LE cert fails in NPM | Grey-cloud DNS for HTTP-01, or Cloudflare DNS-01 token |
+| 502 from NPM | Appliance on `construwx_edge`; forward host `construwx-appliance` port `80` |
 | DB access denied | `.env` does not match restored datadir or `wp-config.php` |
-| Empty site | Wordpress or MariaDB volume not restored / wrong tar layout |
+| Port 80/443 busy | Another NPM/proxy already bound — stop it or migrate to this compose |
 
 ```bash
 docker logs construwx-appliance --tail 100
+docker network inspect construwx_edge
 docker exec construwx-appliance ls -la /data/wordpress/wp-admin/admin-ajax.php
 curl -sI http://localhost:8099/
 ```
@@ -327,8 +359,10 @@ curl -sI http://localhost:8099/
 | Piece | Who provides it |
 |-------|-----------------|
 | Docker + Compose | You, on the new VPS |
-| Image `construwx-appliance:0.1` | Build from this repo or `docker load` your saved image |
+| Image `construwx-appliance:0.1` | Build from this repo or `docker load` |
+| Nginx Proxy Manager | [`compose/nginx-proxy-manager`](../nginx-proxy-manager) — Let’s Encrypt via UI |
+| Cloudflare DNS | You — point `WP_DOMAIN` at the VPS |
 | Volumes + `.env` | **Your backups** (required; store them yourself) |
 | Redis | Optional / empty |
 
-**Image + wordpress volume + mariadb volume (or SQL) + `.env` = full site recovery.**
+**Image + wordpress volume + mariadb volume (or SQL) + `.env` + NPM + Cloudflare = production site.**

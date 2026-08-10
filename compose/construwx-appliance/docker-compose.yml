@@ -15,13 +15,21 @@ services:
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
       TZ: ${TZ}
+      WP_DOMAIN: ${WP_DOMAIN:-}
+      WP_SCHEME: ${WP_SCHEME:-https}
+      WP_DB_PREFIX: ${WP_DB_PREFIX:-cnet_}
+      CONSTRUWX_RUN_DOMAIN_CUTOVER: ${CONSTRUWX_RUN_DOMAIN_CUTOVER:-false}
     ports:
+      # Lab / direct access. Production HTTPS is via Nginx Proxy Manager on 80/443.
       - "8099:80"
     volumes:
       - construwx_appliance_wordpress:/data/wordpress
       - construwx_appliance_mariadb:/data/mariadb
       - construwx_appliance_redis:/data/redis
       - ./import:/import:ro
+    networks:
+      - default
+      - construwx_edge
 
 volumes:
   construwx_appliance_wordpress:
@@ -32,4 +40,9 @@ volumes:
     external: true
   construwx_appliance_redis:
     name: construwx_appliance_redis
+    external: true
+
+networks:
+  construwx_edge:
+    name: construwx_edge
     external: true

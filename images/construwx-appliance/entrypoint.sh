@@ -11,4 +11,19 @@ chown -R redis:redis /data/redis
 chown -R www-data:www-data /data/wordpress || true
 
 echo "Starting ConstruWX appliance..."
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/construwx.conf
+/usr/bin/supervisord -c /etc/supervisor/conf.d/construwx.conf &
+SUPERVISOR_PID=$!
+
+shutdown() {
+  kill -TERM "${SUPERVISOR_PID}" 2>/dev/null || true
+  wait "${SUPERVISOR_PID}" 2>/dev/null || true
+}
+trap shutdown SIGTERM SIGINT
+
+if [[ "${CONSTRUWX_RUN_DOMAIN_CUTOVER:-false}" == "true" ]]; then
+  echo "CONSTRUWX_RUN_DOMAIN_CUTOVER=true — waiting for DB then running domain cutover..."
+  /usr/local/bin/construwx-wait-for-db
+  /usr/local/bin/construwx-set-domain
+fi
+
+wait "${SUPERVISOR_PID}"

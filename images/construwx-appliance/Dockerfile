@@ -63,12 +63,14 @@ COPY entrypoint.sh /usr/local/bin/construwx-entrypoint
 COPY scripts/wait-for-db.sh /usr/local/bin/construwx-wait-for-db
 COPY scripts/import-db.sh /usr/local/bin/construwx-import-db
 COPY scripts/ensure-wordpress-core.sh /usr/local/bin/construwx-ensure-wordpress-core
+COPY scripts/set-domain.sh /usr/local/bin/construwx-set-domain
 
 RUN chmod +x \
     /usr/local/bin/construwx-entrypoint \
     /usr/local/bin/construwx-wait-for-db \
     /usr/local/bin/construwx-import-db \
-    /usr/local/bin/construwx-ensure-wordpress-core
+    /usr/local/bin/construwx-ensure-wordpress-core \
+    /usr/local/bin/construwx-set-domain
 
 EXPOSE 80
 
