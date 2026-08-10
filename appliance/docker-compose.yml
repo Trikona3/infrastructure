@@ -3,7 +3,7 @@ name: construwx-appliance
 services:
   construwx:
     build:
-      context: ../../images/construwx-appliance
+      context: .
     image: construwx-appliance:0.1
     container_name: construwx-appliance
     restart: unless-stopped

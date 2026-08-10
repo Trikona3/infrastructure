@@ -3,8 +3,21 @@
 Single-container ConstruWX runtime for running or recovering the site on a fresh host.
 
 **Image:** `construwx-appliance:0.1`  
-**Compose project:** this directory  
-**Image source:** [`images/construwx-appliance`](../../images/construwx-appliance)
+**Everything for single-image recovery lives in this folder:** `/opt/infrastructure/appliance`
+
+```text
+appliance/
+  Dockerfile                 # single image build
+  docker-compose.yml         # appliance stack
+  docker-compose.npm.yml     # Nginx Proxy Manager (TLS edge)
+  entrypoint.sh, nginx.conf, php-custom.ini, redis.conf, supervisord.conf
+  scripts/                   # ensure-core, import-db, set-domain, wait-for-db
+  import/                    # optional SQL seed (gitignored)
+  .env.example
+  README.md                  # this file
+```
+
+The multi-container stack remains separate under [`compose/construwx`](../compose/construwx).
 
 One container provides Nginx, PHP-FPM 8.3, MariaDB 11, Redis, Supervisor, WP-CLI, and a complete WordPress core. Site content and the database live in **external Docker volumes** that you supply from backups.
 
@@ -145,7 +158,7 @@ sudo ufw enable
 
 ```bash
 git clone <this-repo-url> /opt/infrastructure
-cd /opt/infrastructure/compose/construwx-appliance
+cd /opt/infrastructure/appliance
 docker compose build
 ```
 
@@ -161,11 +174,11 @@ gunzip -c /path/to/construwx-appliance-0.1.tar.gz | docker load
 ```bash
 docker network create construwx_edge
 
-cd /opt/infrastructure/compose/nginx-proxy-manager
-docker compose up -d
+cd /opt/infrastructure/appliance
+docker compose -f docker-compose.npm.yml up -d
 ```
 
-NPM admin UI: `http://127.0.0.1:81` (or SSH tunnel). Default first login `admin@example.com` / `changeme` — change immediately. Details: [`../nginx-proxy-manager/README.md`](../nginx-proxy-manager/README.md).
+NPM admin UI: `http://127.0.0.1:81` (or SSH tunnel). Default first login `admin@example.com` / `changeme` — change immediately.
 
 ### 5. Create volumes and restore backups
 
@@ -202,7 +215,7 @@ SQL-only alternative: leave MariaDB volume empty, copy `$BACKUP/construwx.sql.gz
 ### 6. Configure `.env` and start appliance
 
 ```bash
-cd /opt/infrastructure/compose/construwx-appliance
+cd /opt/infrastructure/appliance
 cp "$BACKUP/env.backup" .env
 chmod 600 .env
 # Set the public hostname Cloudflare will use:
@@ -263,9 +276,10 @@ Lab-only check without DNS: `curl -sI http://localhost:8099/` (SSH tunnel if rem
 ## Day-to-day commands
 
 ```bash
-cd /opt/infrastructure/compose/construwx-appliance
+cd /opt/infrastructure/appliance
 
 docker compose up -d
+docker compose -f docker-compose.npm.yml up -d
 docker compose down          # volumes are kept
 docker compose logs -f
 docker exec -it construwx-appliance bash
@@ -289,7 +303,7 @@ TS=$(date -u +%Y%m%dT%H%M%SZ)
 OUT=/path/to/your/backup-root/construwx-appliance-$TS
 mkdir -p "$OUT"
 
-cd /opt/infrastructure/compose/construwx-appliance
+cd /opt/infrastructure/appliance
 docker compose stop
 
 docker run --rm \
@@ -327,7 +341,7 @@ Copy `$OUT` off the machine. Losing the VPS without an off-box copy loses the si
 ## Rebuild image from source
 
 ```bash
-cd /opt/infrastructure/compose/construwx-appliance
+cd /opt/infrastructure/appliance
 docker compose build --no-cache
 docker compose up -d --force-recreate
 ```
@@ -360,7 +374,7 @@ curl -sI http://localhost:8099/
 |-------|-----------------|
 | Docker + Compose | You, on the new VPS |
 | Image `construwx-appliance:0.1` | Build from this repo or `docker load` |
-| Nginx Proxy Manager | [`compose/nginx-proxy-manager`](../nginx-proxy-manager) — Let’s Encrypt via UI |
+| Nginx Proxy Manager | `docker compose -f docker-compose.npm.yml up -d` — Let’s Encrypt via UI |
 | Cloudflare DNS | You — point `WP_DOMAIN` at the VPS |
 | Volumes + `.env` | **Your backups** (required; store them yourself) |
 | Redis | Optional / empty |
